@@ -115,19 +115,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Band_details.cpp" />
+    <ClCompile Include="..\..\Simulation-Framework-For-CRNs2\Simulation Framework For CRNs\Band_Details.cpp" />
+    <ClCompile Include="..\..\Simulation-Framework-For-CRNs2\Simulation Framework For CRNs\SecondaryUser.cpp" />
     <ClCompile Include="MTTR_And_TTR.cpp" />
-    <ClCompile Include="Receiver.cpp" />
     <ClCompile Include="Rendezvous_Algorithm.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="Transmitter.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Band_details.h" />
+    <ClInclude Include="..\..\Simulation-Framework-For-CRNs2\Simulation Framework For CRNs\Band_Details.h" />
+    <ClInclude Include="..\..\Simulation-Framework-For-CRNs2\Simulation Framework For CRNs\SecondaryUser.h" />
     <ClInclude Include="MTTR_And_TTR.h" />
-    <ClInclude Include="Receiver.h" />
     <ClInclude Include="Rendezvous_Algorithm.h" />
-    <ClInclude Include="Transmitter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
