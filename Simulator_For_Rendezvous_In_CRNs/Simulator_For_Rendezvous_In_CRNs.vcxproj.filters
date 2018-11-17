@@ -24,10 +24,13 @@
     <ClCompile Include="MTTR_And_TTR.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Simulation-Framework-For-CRNs2\Simulation Framework For CRNs\Band_Details.cpp">
+    <ClCompile Include="Band_Details.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Simulation-Framework-For-CRNs2\Simulation Framework For CRNs\SecondaryUser.cpp">
+    <ClCompile Include="SecondaryUser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ID_Generator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,10 +41,13 @@
     <ClInclude Include="MTTR_And_TTR.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Simulation-Framework-For-CRNs2\Simulation Framework For CRNs\Band_Details.h">
+    <ClInclude Include="Band_Details.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Simulation-Framework-For-CRNs2\Simulation Framework For CRNs\SecondaryUser.h">
+    <ClInclude Include="SecondaryUser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ID_Generator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
