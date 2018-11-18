@@ -20,35 +20,12 @@ bool Band_Details::isEmpty() const
 {
 	return PUOFF;
 }
-
-void Band_Details::randomPUState()
-{
-	PUOFF = (double(rand()) / double(RAND_MAX)) >= ProbON;
-	if (ProbON == 1)
-		PUOFF = false;
-}
-
 bool Band_Details::getProbON() const
 {
 	return ProbON;
 }
-DeterministicBand::DeterministicBand(double T, int B)
-{
-	timeVSuccessfulReq = T;
-	successfulVsTimePUActiveForBandN = B;
-}
-bool DeterministicBand::isEmpty(double T, int bandN) const
-{
-	if (T < timeVSuccessfulReq)
-		return true;
-	else
-	{
-		if (bandN > successfulVsTimePUActiveForBandN)
-			return true;
-		else
-		{
-			return false;
-		}
-	}
-}
 
+void Band_Details::toggleState()
+{
+	PUOFF = !PUOFF;
+}

@@ -116,7 +116,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Band_Details.cpp" />
-    <ClCompile Include="ID_Generator.cpp" />
+    <ClCompile Include="Initialization.cpp" />
     <ClCompile Include="MTTR_And_TTR.cpp" />
     <ClCompile Include="Rendezvous_Algorithm.cpp" />
     <ClCompile Include="SecondaryUser.cpp" />
@@ -124,7 +124,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Band_Details.h" />
-    <ClInclude Include="ID_Generator.h" />
+    <ClInclude Include="Initialization.h" />
     <ClInclude Include="MTTR_And_TTR.h" />
     <ClInclude Include="Rendezvous_Algorithm.h" />
     <ClInclude Include="SecondaryUser.h" />

@@ -8,10 +8,9 @@ public:
 	Band_Details() {};
 	Band_Details(double ProbON);
 	bool isEmpty() const;
-	void randomPUState();
 	bool getProbON() const;
+	void toggleState();
 	~Band_Details();
-	std::vector<std::vector<int>> SUOccupantsForDiffLoads;
 
 private:
 	bool PUOFF;

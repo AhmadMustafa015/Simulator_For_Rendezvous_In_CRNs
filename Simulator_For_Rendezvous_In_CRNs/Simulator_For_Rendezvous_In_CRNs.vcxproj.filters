@@ -30,7 +30,7 @@
     <ClCompile Include="SecondaryUser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ID_Generator.cpp">
+    <ClCompile Include="Initialization.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,7 +47,7 @@
     <ClInclude Include="SecondaryUser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ID_Generator.h">
+    <ClInclude Include="Initialization.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
