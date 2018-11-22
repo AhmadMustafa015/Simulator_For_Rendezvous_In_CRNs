@@ -8,7 +8,7 @@ Band_Details::Band_Details(double ProbOn)
 	ProbON = ProbOn;
 	//PUOFF = (double(rand()) / double(RAND_MAX)) >= ProbON;
 	PUOFF = distr(generator) >= ProbON;
-	std::cout << PUOFF << " ";
+	//std::cout << PUOFF << " ";
 	if (ProbON == 1)											// This solves the problem with extreme values 
 		PUOFF = false;
 }

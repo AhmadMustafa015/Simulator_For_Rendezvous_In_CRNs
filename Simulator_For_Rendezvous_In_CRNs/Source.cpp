@@ -2,15 +2,11 @@
 
 int main()
 {
-	Initialization Start;
+	Initialization Start(100, 1000, 100, 0.2);
 	Start.Initialize();
 	bool rendezvous = false;
 
-	
-	while (!rendezvous)
-	{
-		rendezvous = true;
-	}
+
 	system("pause");
 }
 

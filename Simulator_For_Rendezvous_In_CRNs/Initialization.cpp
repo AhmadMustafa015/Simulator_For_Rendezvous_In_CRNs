@@ -3,11 +3,12 @@
 std::random_device rand_dev0;
 std::mt19937 generator0(rand_dev0());
 Initialization::Initialization(int numOfBands, int TimeSlots, int numOfSUs,double PUProb)
+	:SUs(numOfSUs), Bands(numOfBands)
 {
-	int numberOfBands = numOfBands;
-	int timeSlots = TimeSlots;
-	int numberOfSUs = numOfSUs;
-	double PUProbON = PUProb;
+	numberOfBands = numOfBands;
+	timeSlots = TimeSlots;
+	numberOfSUs = numOfSUs;
+	PUProbON = PUProb;
 	Bands.reserve(numberOfBands);
 	SUs.reserve(numberOfSUs);
 }
@@ -23,8 +24,10 @@ void Initialization::Initialize()
 	{
 		SUsConstruct->scanningBands(Bands);
 	}
-	//TransmittingAndReceiving(SUs, numberOfBands);
-	//PUArrival(SUs[0].allocatedBand, Bands);
+	TransmittingAndReceiving(SUs, numberOfBands);
+	arrivalBand = SUs[0].allocatedBand;
+	PUArrival(arrivalBand, Bands);
+
 
 }
 
@@ -34,13 +37,17 @@ void Initialization::TransmittingAndReceiving(std::vector<SecondaryUser> &SUs, i
 	int randomBand;
 	std::vector<int> allocatedBands;
 	std::uniform_int_distribution<int> distr(0, numberOfBands);
-	for (unsigned int i = 0; i < SUs.size() / 2; i++)
+	//std::cout << SUs.size();
+	for (unsigned int i = 0; i < (SUs.size() / 2); i++)
 	{
 		while (!connected)
 		{
 			randomBand = distr(generator0);
+			std::cout << randomBand << " " << std::endl;
+			for (int j = 0; j < SUs[0].emptyBands.size(); j++)
+				std::cout << SUs[0].emptyBands[j] << " ";
 			if (std::find(SUs[i].emptyBands.begin(), SUs[i].emptyBands.end(), randomBand) != SUs[i].emptyBands.end()
-				&& std::find(allocatedBands.begin(), allocatedBands.end(), randomBand) != allocatedBands.end())
+				&& std::find(allocatedBands.begin(), allocatedBands.end(), randomBand) == allocatedBands.end())
 			{
 				connected = true;
 				allocatedBands.push_back(randomBand);
@@ -48,6 +55,7 @@ void Initialization::TransmittingAndReceiving(std::vector<SecondaryUser> &SUs, i
 		}
 		SUs[i].bandAllocation(randomBand);
 		SUs[i + 1].bandAllocation(randomBand);
+		connected = false;
 	}
 }
 

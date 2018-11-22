@@ -31,5 +31,6 @@ private:
 	std::vector<Band_Details>::iterator bandConstruct;
 	std::vector<SecondaryUser> SUs;
 	std::vector<SecondaryUser>::iterator SUsConstruct;
+	int arrivalBand;
 };
 
