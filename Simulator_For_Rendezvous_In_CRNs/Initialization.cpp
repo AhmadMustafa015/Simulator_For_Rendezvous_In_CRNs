@@ -43,9 +43,6 @@ void Initialization::TransmittingAndReceiving(std::vector<SecondaryUser> &SUs, i
 		while (!connected)
 		{
 			randomBand = distr(generator0);
-			std::cout << randomBand << " " << std::endl;
-			for (int j = 0; j < SUs[0].emptyBands.size(); j++)
-				std::cout << SUs[0].emptyBands[j] << " ";
 			if (std::find(SUs[i].emptyBands.begin(), SUs[i].emptyBands.end(), randomBand) != SUs[i].emptyBands.end()
 				&& std::find(allocatedBands.begin(), allocatedBands.end(), randomBand) == allocatedBands.end())
 			{

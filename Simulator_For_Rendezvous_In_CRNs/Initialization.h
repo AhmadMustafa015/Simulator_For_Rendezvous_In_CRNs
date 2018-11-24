@@ -18,7 +18,8 @@ public:
 	Initialization(int numOfBands, int TimeSlots, int numOfSUs, double PUProb);
 	~Initialization() {};
 	void Initialize();
-
+	int arrivalBand;
+	std::vector<SecondaryUser> SUs;
 private:
 	int numberOfBands;
 	int timeSlots;
@@ -29,8 +30,6 @@ private:
 	void TransmittingAndReceiving(std::vector<SecondaryUser> &SUs, int numberOfBands);
 	std::vector<Band_Details> Bands;
 	std::vector<Band_Details>::iterator bandConstruct;
-	std::vector<SecondaryUser> SUs;
 	std::vector<SecondaryUser>::iterator SUsConstruct;
-	int arrivalBand;
 };
 

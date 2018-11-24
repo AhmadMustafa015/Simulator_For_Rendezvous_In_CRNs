@@ -7,17 +7,16 @@ class Rendezvous_Algorithm
 public:
 	Rendezvous_Algorithm();
 	~Rendezvous_Algorithm();
-	bool ourAlgorithm(int initialBand, std::vector<int> &availableBand, int numberOfRadios);
+	void ourAlgorithm(int initialBand, std::vector<int> &availableBand, int numberOfRadios);
+	std::vector<int> channelHoppingSequence;
+	int timeSlot;
 
 private:
 	//our algorithm 
-	bool rendezvous;
 	int distance;
 	int upperBound1;
 	int upperBound2;
 	int lowerBound1;
 	int lowerBound2;
-	std::vector<int> rendezvousSequence;
-	int timeSlot;
 };
 
