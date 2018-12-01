@@ -19,7 +19,8 @@ public:
 	~Initialization() {};
 	void Initialize();
 	int arrivalBand;
-	std::vector<SecondaryUser> SUs;
+	std::vector<Transmitter> Tx;
+	std::vector<Receiver> Rx;
 private:
 	int numberOfBands;
 	int timeSlots;
@@ -27,7 +28,7 @@ private:
 	double PUProbON;
 	bool rendezvous;
 	void PUArrival(int arrivalBand, std::vector<Band_Details> &Bands);
-	void TransmittingAndReceiving(std::vector<SecondaryUser> &SUs, int numberOfBands);
+	void intitialTransmittingAndReceiving(std::vector<Transmitter> &SUs, std::vector<Receiver> &SU,int numberOfBands);
 	std::vector<Band_Details> Bands;
 	std::vector<Band_Details>::iterator bandConstruct;
 	std::vector<SecondaryUser>::iterator SUsConstruct;

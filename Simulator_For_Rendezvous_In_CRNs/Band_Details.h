@@ -11,7 +11,8 @@ public:
 	bool getProbON() const;
 	void toggleState();
 	~Band_Details();
-
+	std::vector<int> packetVsId;
+	void clearPacket();
 private:
 	bool PUOFF;
 	double ProbON;
