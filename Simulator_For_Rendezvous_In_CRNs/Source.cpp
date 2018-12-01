@@ -2,7 +2,7 @@
 #include "Rendezvous_Algorithm.h"
 int main()
 {
-	Initialization Start(100, 1000, 100, 0.2);
+	Initialization Start(100, 1000, 100, 0.4);
 	Start.Initialize();
 	bool rendezvous = false;
 	Rendezvous_Algorithm Transmitter;
