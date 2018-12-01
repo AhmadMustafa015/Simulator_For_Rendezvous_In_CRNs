@@ -16,6 +16,11 @@ Band_Details::~Band_Details()
 {
 }
 
+void Band_Details::clearPacket()
+{
+	std::vector<int>().swap(packetVsId);
+}
+
 bool Band_Details::isEmpty() const
 {
 	return PUOFF;

@@ -3,14 +3,13 @@
 std::random_device rand_dev0;
 std::mt19937 generator0(rand_dev0());
 Initialization::Initialization(int numOfBands, int TimeSlots, int numOfSUs,double PUProb)
-	:SUs(numOfSUs), Bands(numOfBands)
+	:Tx(numOfSUs/2), Bands(numOfBands), Rx(numberOfSUs/2)
 {
 	numberOfBands = numOfBands;
 	timeSlots = TimeSlots;
 	numberOfSUs = numOfSUs;
 	PUProbON = PUProb;
 	Bands.reserve(numberOfBands);
-	SUs.reserve(numberOfSUs);
 }
 
 void Initialization::Initialize()
@@ -20,38 +19,36 @@ void Initialization::Initialize()
 	{
 		*bandConstruct = Band_Details(PUProbON);
 	}
-	for (SUsConstruct = SUs.begin(); SUsConstruct != SUs.end(); SUsConstruct++)
+	/*for (SUsConstruct = SUs.begin(); SUsConstruct != SUs.end(); SUsConstruct++)
 	{
 		SUsConstruct->scanningBands(Bands);
-	}
-	TransmittingAndReceiving(SUs, numberOfBands);
-	arrivalBand = SUs[0].allocatedBand;
-	PUArrival(arrivalBand, Bands);
-
-
+	}*/
+	intitialTransmittingAndReceiving(Tx,Rx, numberOfBands);
 }
 
-void Initialization::TransmittingAndReceiving(std::vector<SecondaryUser> &SUs, int numberOfBands)
+void Initialization::intitialTransmittingAndReceiving(std::vector<Transmitter> &Tx, std::vector<Receiver> &Rx, int numberOfBands)
 {
 	bool connected = false;
 	int randomBand;
 	std::vector<int> allocatedBands;
-	std::uniform_int_distribution<int> distr(0, numberOfBands);
+	std::uniform_int_distribution<int> distr(0, numberOfBands-1);
 	//std::cout << SUs.size();
-	for (unsigned int i = 0; i < (SUs.size() / 2); i++)
+	for (unsigned int i = 0; i < Tx.size(); i++)
 	{
 		while (!connected)
 		{
 			randomBand = distr(generator0);
-			if (std::find(SUs[i].emptyBands.begin(), SUs[i].emptyBands.end(), randomBand) != SUs[i].emptyBands.end()
+			if (Bands[randomBand].isEmpty()
 				&& std::find(allocatedBands.begin(), allocatedBands.end(), randomBand) == allocatedBands.end())
 			{
 				connected = true;
 				allocatedBands.push_back(randomBand);
 			}
 		}
-		SUs[i].bandAllocation(randomBand);
-		SUs[i + 1].bandAllocation(randomBand);
+		Tx[i].bandAllocation(randomBand);
+		Rx[i].bandAllocation(randomBand);
+		PUArrival(randomBand, Bands);
+		//arrivalBand = SUs[0].allocatedBand;
 		connected = false;
 	}
 }
