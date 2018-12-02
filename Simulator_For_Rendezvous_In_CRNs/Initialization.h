@@ -2,7 +2,7 @@
 #include <iterator>
 #include "Band_Details.h"
 #include "SecondaryUser.h"
-
+#include "Rendezvous_Algorithm.h"
 class Initialization
 {
 public:
@@ -15,7 +15,7 @@ public:
 		std::vector<SecondaryUser> SUs(numberOfSUs);
 
 	};
-	Initialization(int numOfBands, int TimeSlots, int numOfSUs, double PUProb);
+	Initialization(int numOfBands, int numOfSUs, double PUProb);
 	~Initialization() {};
 	void Initialize();
 	int arrivalBand;
@@ -32,5 +32,11 @@ private:
 	void intitialTransmittingAndReceiving(std::vector<Transmitter> &SUs, std::vector<Receiver> &SU,int numberOfBands);
 	std::vector<Band_Details>::iterator bandConstruct;
 	std::vector<SecondaryUser>::iterator SUsConstruct;
+	std::vector<Rendezvous_Algorithm>::iterator RendezvouzTxIterator;
+	std::vector<Rendezvous_Algorithm>::iterator RendezvouzRxIterator;
+	std::vector<Rendezvous_Algorithm> channelHoppingTX;
+	std::vector<Rendezvous_Algorithm> channelHoppingRX;
+	int counter;
+	std::vector<bool> successfulRendezvousVsSU;
 };
 

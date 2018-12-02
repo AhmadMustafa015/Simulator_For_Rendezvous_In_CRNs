@@ -26,13 +26,13 @@ private:
 class Transmitter :public SecondaryUser
 {
 public:
-	Transmitter(int numberOfBand);
+	Transmitter() {};
 	void sendPacket(Band_Details &band, int ID, int radioNumber);
 };
 class Receiver :public SecondaryUser
 {
 public:
-	Receiver(int numberOfBand);
+	Receiver() {};
 	bool listening(Band_Details &band, int ID);
 };
 

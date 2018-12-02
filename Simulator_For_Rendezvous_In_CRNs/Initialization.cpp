@@ -2,14 +2,17 @@
 
 std::random_device rand_dev0;
 std::mt19937 generator0(rand_dev0());
-Initialization::Initialization(int numOfBands, int TimeSlots, int numOfSUs,double PUProb)
+Initialization::Initialization(int numOfBands, int numOfSUs,double PUProb)
 	:Tx(numOfSUs/2), Bands(numOfBands), Rx(numberOfSUs/2)
+	,channelHoppingRX(numOfSUs/2),channelHoppingTX(numOfSUs/2)
+	,successfulRendezvousVsSU(5, false)
 {
+	timeSlots = 0;
 	numberOfBands = numOfBands;
-	timeSlots = TimeSlots;
 	numberOfSUs = numOfSUs;
 	PUProbON = PUProb;
 	Bands.reserve(numberOfBands);
+	rendezvous = false;
 }
 
 void Initialization::Initialize()
@@ -24,6 +27,33 @@ void Initialization::Initialize()
 		SUsConstruct->scanningBands(Bands);
 	}*/
 	intitialTransmittingAndReceiving(Tx,Rx, numberOfBands);
+	counter = 0;
+	for (RendezvouzTxIterator = channelHoppingTX.begin(); RendezvouzTxIterator != channelHoppingTX.end(); RendezvouzTxIterator++)
+	{
+		*RendezvouzTxIterator = Rendezvous_Algorithm(Tx[counter].allocatedBand, Tx[counter], Bands, counter);
+		counter++;
+	}
+	counter = 0;
+	for (RendezvouzRxIterator = channelHoppingRX.begin(); RendezvouzRxIterator != channelHoppingRX.end(); RendezvouzRxIterator++)
+	{
+		*RendezvouzRxIterator = Rendezvous_Algorithm(Rx[counter].allocatedBand, Rx[counter], Bands, counter);
+		counter++;
+	}
+	timeSlots++;
+	for (int i = 0; i < numberOfSUs / 2; i++)
+	{
+		successfulRendezvousVsSU[i] = channelHoppingRX[i].firstRendezvous;
+	}
+	while (!rendezvous)
+	{
+		for (int i = 0; i < numberOfSUs / 2; i++)
+			channelHoppingTX[i].ourAlgorithmTx(Tx[i].allocatedBand, Tx[i], Bands, i);
+		for (int i = 0; i < numberOfSUs / 2; i++)
+		{
+			channelHoppingTX[i].ourAlgorithmRx(Rx[i].allocatedBand, Rx[i], Bands, i);
+			rendezvous = successfulRendezvousVsSU[i] && rendezvous;
+		}
+	}
 }
 
 

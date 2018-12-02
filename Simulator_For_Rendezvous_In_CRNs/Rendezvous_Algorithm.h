@@ -14,7 +14,7 @@ public:
 	bool ourAlgorithmRx(int initialBand,Receiver &SUs, std::vector<Band_Details> &Bands,int Id);
 	std::vector<int> channelHoppingSequence;
 	int timeSlot;
-
+	bool firstRendezvous;
 private:
 	//our algorithm 
 	int distance;
@@ -26,7 +26,6 @@ private:
 	int radioSendPacket;
 	std::vector<int> radiosWithEmptyBand;
 	std::vector<int> channelSequence;
-	bool firstRendezvous;
 	std::vector<bool> twoTimeSlotPassed;
 };
 
