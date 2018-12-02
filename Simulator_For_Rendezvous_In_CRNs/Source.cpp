@@ -1,6 +1,4 @@
 #include "Initialization.h"
-#include "Rendezvous_Algorithm.h"
-#include"SecondaryUser.h"
 int main()
 {
 	//initializaion start(number of band , number of SUs , Probability of PU on) 
@@ -8,4 +6,3 @@ int main()
 	Start.Initialize();
 	system("pause");
 }
-

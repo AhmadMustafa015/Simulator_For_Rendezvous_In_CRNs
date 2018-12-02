@@ -7,7 +7,7 @@
 class Rendezvous_Algorithm
 {
 public:
-	Rendezvous_Algorithm();
+	Rendezvous_Algorithm() {};
 	Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std::vector<Band_Details> &Bands, int ID);
 	Rendezvous_Algorithm(int initialBand, Receiver &Rx, std::vector<Band_Details> &Bands, int ID);
 	~Rendezvous_Algorithm() {};
