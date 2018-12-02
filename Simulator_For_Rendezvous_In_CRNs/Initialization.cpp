@@ -3,7 +3,7 @@
 std::random_device rand_dev0;
 std::mt19937 generator0(rand_dev0());
 Initialization::Initialization(int numOfBands, int numOfSUs,double PUProb)
-	:Tx(numOfSUs/2), Bands(numOfBands), Rx(numberOfSUs/2)
+	:Tx(numOfSUs/2), Bands(numOfBands), Rx(numOfSUs/2)
 	,channelHoppingRX(numOfSUs/2),channelHoppingTX(numOfSUs/2)
 	,successfulRendezvousVsSU(5, false)
 {

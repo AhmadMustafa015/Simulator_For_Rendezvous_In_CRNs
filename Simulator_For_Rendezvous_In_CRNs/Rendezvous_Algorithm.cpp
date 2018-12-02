@@ -3,6 +3,10 @@ std::random_device rand_dev5;
 std::mt19937 generator5(rand_dev5());
 
 
+Rendezvous_Algorithm::Rendezvous_Algorithm()
+{
+}
+
 Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std::vector<Band_Details> &Bands, int ID)
 {
 	distance = 2 * Tx.numberOfRadio;
@@ -11,6 +15,7 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std
 	upperBound2 = initialBand - 1;
 	lowerBound2 = initialBand - distance / 2;
 	channelHoppingSequence.resize(Tx.numberOfRadio);
+	channelSequence.resize(distance);
 	for (int b = lowerBound2; b <= upperBound2; b++)
 	{
 		channelSequence.push_back(b);
@@ -32,6 +37,7 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Receiver & RX, std::
 	upperBound2 = initialBand - 1;
 	lowerBound2 = initialBand - distance / 2;
 	channelHoppingSequence.resize(RX.numberOfRadio);
+	channelSequence.resize(distance);
 	for (int b = lowerBound2; b <= upperBound2; b++)
 	{
 		channelSequence.push_back(b);
