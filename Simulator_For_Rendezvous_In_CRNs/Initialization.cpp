@@ -1,9 +1,9 @@
 #include "Initialization.h"
 
-std::random_device rand_dev0;
-std::mt19937 generator0(rand_dev0());
+std::default_random_engine generator0(1);
+//std::mt19937 generator0(rand_dev0());
 Initialization::Initialization(int numOfBands, int numOfSUs,double PUProb)
-	:Tx(numOfSUs/2), Bands(numOfBands), Rx(numberOfSUs/2)
+	:Tx(numOfSUs/2), Bands(numOfBands), Rx(numOfSUs/2)
 	,channelHoppingRX(numOfSUs/2),channelHoppingTX(numOfSUs/2)
 	,successfulRendezvousVsSU(5, false)
 {
@@ -47,10 +47,10 @@ void Initialization::Initialize()
 	while (!rendezvous)
 	{
 		for (int i = 0; i < numberOfSUs / 2; i++)
-			channelHoppingTX[i].ourAlgorithmTx(Tx[i].allocatedBand, Tx[i], Bands, i);
+			channelHoppingTX[i].ourAlgorithmTx(Tx[i].allocatedBand, Tx[i], Bands, i , timeSlots);
 		for (int i = 0; i < numberOfSUs / 2; i++)
 		{
-			channelHoppingTX[i].ourAlgorithmRx(Rx[i].allocatedBand, Rx[i], Bands, i);
+			channelHoppingRX[i].ourAlgorithmRx(Rx[i].allocatedBand, Rx[i], Bands, i,timeSlots);
 			rendezvous = successfulRendezvousVsSU[i] && rendezvous;
 		}
 	}
@@ -77,6 +77,7 @@ void Initialization::intitialTransmittingAndReceiving(std::vector<Transmitter> &
 			}
 		}
 		Tx[i].bandAllocation(randomBand);
+		std::cout << randomBand << " ";
 		Rx[i].bandAllocation(randomBand);
 		PUArrival(randomBand, Bands);
 		//arrivalBand = SUs[0].allocatedBand;

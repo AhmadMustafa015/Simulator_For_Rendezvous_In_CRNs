@@ -2,8 +2,9 @@
 
 Band_Details::Band_Details(double ProbOn)
 {
-	std::random_device rand_dev;
-	std::mt19937 generator(rand_dev());
+	//std::random_device rand_dev;
+	//std::mt19937 generator(rand_dev());
+	std::default_random_engine generator(1);
 	std::uniform_real_distribution<double> distr(0.00, 1.00);
 	ProbON = ProbOn;
 	//PUOFF = (double(rand()) / double(RAND_MAX)) >= ProbON;

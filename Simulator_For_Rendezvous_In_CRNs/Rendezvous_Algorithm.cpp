@@ -1,24 +1,30 @@
 #include "Rendezvous_Algorithm.h"
-std::random_device rand_dev5;
-std::mt19937 generator5(rand_dev5());
+//std::random_device rand_dev5;
+//std::mt19937 generator5(rand_dev5());
 
-
+std::default_random_engine generator5(1);
 Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std::vector<Band_Details> &Bands, int ID)
 {
 	distance = 2 * Tx.numberOfRadio;
+	std::cout << distance << " ";
 	upperBound1 = initialBand + distance / 2;
+	std::cout << upperBound1 << " ";
 	lowerBound1 = initialBand + 1;
 	upperBound2 = initialBand - 1;
 	lowerBound2 = initialBand - distance / 2;
 	channelHoppingSequence.resize(Tx.numberOfRadio);
+	channelSequence.resize(distance);
 	for (int b = lowerBound2; b <= upperBound2; b++)
 	{
 		channelSequence.push_back(b);
+		std::cout << channelSequence[b-lowerBound2] << " ";
 		channelSequence[Tx.numberOfRadio + (b - lowerBound2)] = lowerBound1 + (b - lowerBound2);
+		std::cout << channelSequence[Tx.numberOfRadio + (b - lowerBound2)] << " ";
 	}
 	for (int i = 0; i < Tx.numberOfRadio; i++)
 	{
 		channelHoppingSequence[i] = channelSequence[i * 2];
+		std::cout << channelHoppingSequence[i] << " ";
 		if (Tx.scanningBands(Bands, channelHoppingSequence[i]))
 			radiosWithEmptyBand.push_back(i);
 	}
@@ -32,6 +38,7 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Receiver & RX, std::
 	upperBound2 = initialBand - 1;
 	lowerBound2 = initialBand - distance / 2;
 	channelHoppingSequence.resize(RX.numberOfRadio);
+	channelSequence.resize(distance);
 	for (int b = lowerBound2; b <= upperBound2; b++)
 	{
 		channelSequence.push_back(b);
@@ -46,10 +53,10 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Receiver & RX, std::
 		twoTimeSlotPassed[i] = true;
 	}
 }
-void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std::vector<Band_Details> &Bands, int ID)
+void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std::vector<Band_Details> &Bands, int ID,int timeSlot)
 {
 	//if(timeSlot == 4 * ) 
-	if (timeSlot % 4 == 0 || (radiosWithEmptyBand.size() == 0 && timeSlot % 2 == 0))
+	if (timeSlot % 4 == 0 || (radiosWithEmptyBand.empty() && timeSlot % 2 == 0))
 	{
 		channelSequence.empty();
 		lowerBound1 = upperBound1 + 1;
@@ -72,7 +79,7 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 	{
 		for (int i = 0; i < Tx.numberOfRadio; i++)
 		{
-			if (radiosWithEmptyBand.size() == 0 || std::find(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i) == radiosWithEmptyBand.end())
+			if (radiosWithEmptyBand.empty() || std::find(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i) == radiosWithEmptyBand.end())
 			{
 				//++channelHoppingSequence[i];
 				if (channelHoppingSequence[i] == upperBound1 || std::find(channelHoppingSequence.begin()
@@ -99,11 +106,14 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 			}
 		}
 	}
-	std::uniform_int_distribution<int> distr(0, radiosWithEmptyBand.size() - 1);
-	if (radiosWithEmptyBand.size() != 0)
+	if (!radiosWithEmptyBand.empty())
 	{
-		radioSendPacket = distr(generator5);
-		Tx.sendPacket(Bands[channelHoppingSequence[radioSendPacket]], ID, radiosWithEmptyBand[radioSendPacket]);
+		std::uniform_int_distribution<int> distr(1, radiosWithEmptyBand.size());
+		if (radiosWithEmptyBand.size() != 0)
+		{
+			radioSendPacket = distr(generator5) - 1;
+			Tx.sendPacket(Bands[channelHoppingSequence[radioSendPacket]], ID, radiosWithEmptyBand[radioSendPacket]);
+		}
 	}
 	/*for (int i = 0; i < numberOfRadios; i++)
 	{
@@ -125,10 +135,10 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 				channelHoppingSequence[i] = distr(generator5);
 			}
 		}*/
-	radiosWithEmptyBand.empty();
+	radiosWithEmptyBand.clear();
 }
 
-bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::vector<Band_Details>& Bands, int ID)
+bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::vector<Band_Details>& Bands, int ID, int timeSlot)
 {
 	if (timeSlot % 4 == 0 || (radiosWithEmptyBand.size() == 0 && timeSlot % 2 == 0))
 	{

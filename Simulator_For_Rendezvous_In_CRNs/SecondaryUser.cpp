@@ -1,7 +1,8 @@
 #include "SecondaryUser.h"
 
-std::random_device rand_dev;
-std::mt19937 generator(rand_dev());
+//std::random_device rand_dev;
+//std::mt19937 generator(rand_dev());
+std::default_random_engine generator(1);
 SecondaryUser::SecondaryUser()
 {
 	//NumberOfBand = 100;
@@ -20,12 +21,7 @@ bool SecondaryUser::scanningBands(const std::vector<Band_Details> &Bands, int ba
 }
 void SecondaryUser::bandAllocation(int randomBand)
 {
-	if (emptyBands.size() != 0) 
-	{
-		allocatedBand = randomBand;
-			//Bands[emptyBands[randomBand]].setOccupants(SUID);
-	}
-
+	allocatedBand = randomBand;
 }
 void SecondaryUser::emptyAllResult() {
 	emptyBands.clear();
