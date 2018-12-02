@@ -6,17 +6,27 @@ int main()
 	Initialization Start(100, 1000, 100, 0.2);
 	Start.Initialize();
 	bool rendezvous = false;
-	Rendezvous_Algorithm tryToRendezvous;
+	Rendezvous_Algorithm tryToRendezvousRX(60, Start.Rx[0], Start.Bands, 0);
+	int T = 1;
 	std::vector<SecondaryUser>::iterator RxConstruct;
 	std::vector<SecondaryUser>::iterator TxConstruct;
-	std::vector<int> successfulRendezvousChannels;
+	//std::vector<int> successfulRendezvousChannels;
+	std::vector<bool> successfulRendezvousVsSU(5 , false);
+	rendezvous = false;
 	while (!rendezvous)
 	{
 		for (int i = 0; i < 10 / 2; i++)
 		{
-			tryToRendezvous.ourAlgorithmTx();
-			tryToRendezvous.ourAlgorithmRx();
+			if (!successfulRendezvousVsSU[i])
+			{
+				tryToRendezvous.ourAlgorithmTx();
+				tryToRendezvous.ourAlgorithmRx();
+			}
 		}
+		for (int i = 0; i < successfulRendezvousVsSU.size(); i++)
+			rendezvous = successfulRendezvousVsSU[i] && rendezvous;
+		
+	}
 		/*Transmitter.ourAlgorithm(Start.arrivalBand, Start.SUs[0].emptyBands, 1);
 		Receiver.ourAlgorithm(Start.arrivalBand, Start.SUs[1].emptyBands, 1);
 		std::sort(Transmitter.channelHoppingSequence.begin(), Transmitter.channelHoppingSequence.end());

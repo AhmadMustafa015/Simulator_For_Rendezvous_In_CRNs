@@ -31,7 +31,8 @@ public:
 };
 class Receiver :public SecondaryUser
 {
+public:
 	Receiver(int numberOfBand);
-	void listening();
+	bool listening(Band_Details &band, int ID);
 };
 

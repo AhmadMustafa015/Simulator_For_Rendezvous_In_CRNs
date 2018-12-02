@@ -21,6 +21,7 @@ public:
 	int arrivalBand;
 	std::vector<Transmitter> Tx;
 	std::vector<Receiver> Rx;
+	std::vector<Band_Details> Bands;
 private:
 	int numberOfBands;
 	int timeSlots;
@@ -29,7 +30,6 @@ private:
 	bool rendezvous;
 	void PUArrival(int arrivalBand, std::vector<Band_Details> &Bands);
 	void intitialTransmittingAndReceiving(std::vector<Transmitter> &SUs, std::vector<Receiver> &SU,int numberOfBands);
-	std::vector<Band_Details> Bands;
 	std::vector<Band_Details>::iterator bandConstruct;
 	std::vector<SecondaryUser>::iterator SUsConstruct;
 };

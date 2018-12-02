@@ -5,113 +5,182 @@ std::mt19937 generator5(rand_dev5());
 
 Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std::vector<Band_Details> &Bands, int ID)
 {
-
 	distance = 2 * Tx.numberOfRadio;
 	upperBound1 = initialBand + distance / 2;
 	lowerBound1 = initialBand + 1;
 	upperBound2 = initialBand - 1;
 	lowerBound2 = initialBand - distance / 2;
 	channelHoppingSequence.resize(Tx.numberOfRadio);
+	for (int b = lowerBound2; b <= upperBound2; b++)
+	{
+		channelSequence.push_back(b);
+		channelSequence[Tx.numberOfRadio + (b - lowerBound2)] = lowerBound1 + (b - lowerBound2);
+	}
 	for (int i = 0; i < Tx.numberOfRadio; i++)
 	{
-		channelHoppingSequence[i] = lowerBound1 + (i)* ceil(distance / Tx.numberOfRadio);
-		if (channelHoppingSequence[i] == initialBand)
-			++channelHoppingSequence[i];
+		channelHoppingSequence[i] = channelSequence[i * 2];
 		if (Tx.scanningBands(Bands, channelHoppingSequence[i]))
-			emptyBands.push_back(i);
+			radiosWithEmptyBand.push_back(i);
 	}
-	timeSlot++;
-
 }
-
-
-
-Rendezvous_Algorithm::~Rendezvous_Algorithm()
+Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Receiver & RX, std::vector<Band_Details>& Bands, int ID)
+	:twoTimeSlotPassed(RX.numberOfRadio , false)
 {
+	distance = 2 * RX.numberOfRadio;
+	upperBound1 = initialBand + distance / 2;
+	lowerBound1 = initialBand + 1;
+	upperBound2 = initialBand - 1;
+	lowerBound2 = initialBand - distance / 2;
+	channelHoppingSequence.resize(RX.numberOfRadio);
+	for (int b = lowerBound2; b <= upperBound2; b++)
+	{
+		channelSequence.push_back(b);
+		channelSequence[RX.numberOfRadio + (b - lowerBound2)] = lowerBound1 + (b - lowerBound2);
+	}
+	for (int i = 0; i < RX.numberOfRadio; i++)
+	{
+		channelHoppingSequence[i] = channelSequence[i * 2];
+		if (RX.scanningBands(Bands, channelHoppingSequence[i]))
+			radiosWithEmptyBand.push_back(i);
+		firstRendezvous =  RX.listening(Bands[channelHoppingSequence[i]], ID);
+		twoTimeSlotPassed[i] = true;
+	}
 }
-
 void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std::vector<Band_Details> &Bands, int ID)
 {
-	rendezvous = false;
-	while (!rendezvous)
+	//if(timeSlot == 4 * ) 
+	if (timeSlot % 4 == 0 || (radiosWithEmptyBand.size() == 0 && timeSlot % 2 == 0))
+	{
+		channelSequence.empty();
+		lowerBound1 = upperBound1 + 1;
+		upperBound1 += Tx.numberOfRadio;
+		upperBound2 = lowerBound2 - 1;
+		lowerBound2 -= Tx.numberOfRadio;
+		for (int b = lowerBound2; b <= upperBound2; b++)
+		{
+			channelSequence.push_back(b);
+			channelSequence[Tx.numberOfRadio + (b - lowerBound2)] = lowerBound1 + (b - lowerBound2);
+		}
+		for (int i = 0; i < Tx.numberOfRadio; i++)
+		{
+			channelHoppingSequence[i] = channelSequence[i * 2];
+			if (Tx.scanningBands(Bands, channelHoppingSequence[i]))    
+				radiosWithEmptyBand.push_back(i);
+		}
+	}
+	else if(timeSlot > 1)
 	{
 		for (int i = 0; i < Tx.numberOfRadio; i++)
 		{
-			channelHoppingSequence[i] = lowerBound1 + (i)* ceil(distance / Tx.numberOfRadio);
-			if (channelHoppingSequence[i] == initialBand)
-				++channelHoppingSequence[i];
-			if (Tx.scanningBands(Bands, channelHoppingSequence[i]))
-				emptyBands.push_back(i);
-		}
-		std::uniform_int_distribution<int> distr(0, emptyBands.size()-1);
-		if (!emptyBands.empty())
-		{
-			radioSendPacket = distr(generator5);
-			Tx.sendPacket(Bands[channelHoppingSequence[radioSendPacket]], ID, emptyBands[radioSendPacket]);
-		}
-		timeSlot++;
-		int temp = 0;
-		for (int i = 0; i < Tx.numberOfRadio; i++)
-		{
-			if (emptyBands.empty() || std::find(emptyBands.begin(), emptyBands.end(), i) == emptyBands.end())
+			if (radiosWithEmptyBand.size() == 0 || std::find(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i) == radiosWithEmptyBand.end())
 			{
-				temp = channelHoppingSequence[i];
 				//++channelHoppingSequence[i];
-
-				if (channelHoppingSequence[i]+1 == upperBound2 || std::find(channelHoppingSequence.begin 
-					, channelHoppingSequence.end, (channelHoppingSequence[i]+1)) != channelHoppingSequence.end())
+				if (channelHoppingSequence[i] == upperBound1 || std::find(channelHoppingSequence.begin()
+					, channelHoppingSequence.end(), (channelHoppingSequence[i] + 1)) != channelHoppingSequence.end())
 				{
-					for (int i = 0; i < (Tx.numberOfRadio - 1); i++)
+					for (int j = 0; j < (Tx.numberOfRadio); j++)
 					{
 						if (find(channelHoppingSequence.begin(), channelHoppingSequence.end(),
-							(lowerBound1 + 2 * i + 1)) == channelHoppingSequence.end() && (lowerBound1 + 2 * i + 1) != initialBand)
+							channelSequence[j * 2 + 1]) == channelHoppingSequence.end())
 						{
-							channelHoppingSequence[i] = lowerBound1 + 2 * i + 1;
-							if (Tx.scanningBands(Bands, channelHoppingSequence[i]))
-								emptyBands.push_back(i);
+							channelHoppingSequence[j] = channelSequence[j * 2 + 1];
+							if (Tx.scanningBands(Bands, channelHoppingSequence[j]))
+								radiosWithEmptyBand.push_back(j);
 						}
 					}
 				}
 				else
 				{
-					channelHoppingSequence[i]++;
+					std::vector<int>::iterator itr = std::find(channelSequence.begin(), channelSequence.end(), channelHoppingSequence[i]);
+					channelHoppingSequence[i] = channelSequence[std::distance(channelSequence.begin(), itr) + 1];
 					if (Tx.scanningBands(Bands, channelHoppingSequence[i]))
-						emptyBands.push_back(i);
+						radiosWithEmptyBand.push_back(i);
 				}
 			}
-			else
+		}
+	}
+	std::uniform_int_distribution<int> distr(0, radiosWithEmptyBand.size() - 1);
+	if (radiosWithEmptyBand.size() != 0)
+	{
+		radioSendPacket = distr(generator5);
+		Tx.sendPacket(Bands[channelHoppingSequence[radioSendPacket]], ID, radiosWithEmptyBand[radioSendPacket]);
+	}
+	/*for (int i = 0; i < numberOfRadios; i++)
+	{
+
+		while (std::find(availableBand.begin(), availableBand.end(), channelHoppingSequence[i]) == availableBand.end()
+			&& channelHoppingSequence[i] < channelHoppingSequence[i + 1])
+			++channelHoppingSequence[i];
+		while (std::find(availableBand.begin(), availableBand.end(), channelHoppingSequence[i]) == availableBand.end())
+		{
+			upperBound1 = lowerBound1;
+			lowerBound1 = lowerBound1 - distance / 2;
+			upperBound2 = lowerBound2;
+			lowerBound2 = lowerBound2 - distance / 2;
+			std::uniform_int_distribution<int> distr(lowerBound1, upperBound1);
+			channelHoppingSequence[i] = distr(generator5);
+			if (std::find(availableBand.begin(), availableBand.end(), channelHoppingSequence[i]) == availableBand.end())
 			{
-				std::uniform_int_distribution<int> distr(0, emptyBands.size()-1);
-				radioSendPacket = distr(generator5);
-				Tx.sendPacket(Bands[channelHoppingSequence[radioSendPacket]], ID, emptyBands[radioSendPacket]);
+				std::uniform_int_distribution<int> distr(lowerBound2, upperBound2);
+				channelHoppingSequence[i] = distr(generator5);
+			}
+		}*/
+	radiosWithEmptyBand.empty();
+}
+
+bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::vector<Band_Details>& Bands, int ID)
+{
+	if (timeSlot % 4 == 0 || (radiosWithEmptyBand.size() == 0 && timeSlot % 2 == 0))
+	{
+		radiosWithEmptyBand.clear();
+		channelSequence.empty();
+		lowerBound1 = upperBound1 + 1;
+		upperBound1 += RX.numberOfRadio;
+		upperBound2 = lowerBound2 - 1;
+		lowerBound2 -= RX.numberOfRadio;
+		for (int b = lowerBound2; b <= upperBound2; b++)
+		{
+			channelSequence.push_back(b);
+			channelSequence[RX.numberOfRadio + (b - lowerBound2)] = lowerBound1 + (b - lowerBound2);
+		}
+		for (int i = 0; i < RX.numberOfRadio; i++)
+		{
+			channelHoppingSequence[i] = channelSequence[i * 2];
+			if (RX.scanningBands(Bands, channelHoppingSequence[i]))
+				radiosWithEmptyBand.push_back(i);
+			if (RX.scanningBands(Bands, channelHoppingSequence[i]))
+				radiosWithEmptyBand.push_back(i);
+			twoTimeSlotPassed[i] = true;
+			if (RX.listening(Bands[channelHoppingSequence[i]], ID))
+				return true;
+		}
+	}
+	else
+	{
+		for (int i = 0; i < RX.numberOfRadio; i++)
+		{
+			if (std::find(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i) == radiosWithEmptyBand.end() || !twoTimeSlotPassed[i])
+			{
+				std::vector<int>::iterator itr = std::find(channelSequence.begin(), channelSequence.end(), channelHoppingSequence[i]);
+				channelHoppingSequence[i] = channelSequence[std::distance(channelSequence.begin(), itr) + 1];
+				if (RX.scanningBands(Bands, channelHoppingSequence[i]))
+					radiosWithEmptyBand.push_back(i);
+				else
+				{
+					radiosWithEmptyBand.erase(std::remove(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i), radiosWithEmptyBand.end());
+				}
+				twoTimeSlotPassed[i] = true;
+				if (RX.listening(Bands[channelHoppingSequence[i]], ID))
+					return true;
+			}
+			else if (twoTimeSlotPassed[i])
+			{
+				if (RX.scanningBands(Bands, channelHoppingSequence[i]))
+					radiosWithEmptyBand.push_back(i);
+				twoTimeSlotPassed[i] = false;
+				if (RX.listening(Bands[channelHoppingSequence[i]], ID))
+					return true;
 			}
 		}
-		timeSlot++;
-
-		if (timeSlot > 1)
-
-
-			/*for (int i = 0; i < numberOfRadios; i++)
-			{
-
-				while (std::find(availableBand.begin(), availableBand.end(), channelHoppingSequence[i]) == availableBand.end()
-					&& channelHoppingSequence[i] < channelHoppingSequence[i + 1])
-					++channelHoppingSequence[i];
-				while (std::find(availableBand.begin(), availableBand.end(), channelHoppingSequence[i]) == availableBand.end())
-				{
-					upperBound1 = lowerBound1;
-					lowerBound1 = lowerBound1 - distance / 2;
-					upperBound2 = lowerBound2;
-					lowerBound2 = lowerBound2 - distance / 2;
-					std::uniform_int_distribution<int> distr(lowerBound1, upperBound1);
-					channelHoppingSequence[i] = distr(generator5);
-					if (std::find(availableBand.begin(), availableBand.end(), channelHoppingSequence[i]) == availableBand.end())
-					{
-						std::uniform_int_distribution<int> distr(lowerBound2, upperBound2);
-						channelHoppingSequence[i] = distr(generator5);
-					}
-				}*/
-
 	}
-}
 }

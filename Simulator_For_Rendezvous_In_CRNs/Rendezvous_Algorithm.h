@@ -8,9 +8,10 @@ class Rendezvous_Algorithm
 {
 public:
 	Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std::vector<Band_Details> &Bands, int ID);
-	~Rendezvous_Algorithm();
-	void ourAlgorithmTx(int initialBand,Transmitter &SUs, std::vector<Band_Details> &Bands, int Id);
-	void ourAlgorithmRx(int initialBand, Receiver &SUs, std::vector<Band_Details> &Bands, int Id);
+	Rendezvous_Algorithm(int initialBand, Receiver &Rx, std::vector<Band_Details> &Bands, int ID);
+	~Rendezvous_Algorithm() {};
+	void ourAlgorithmTx(int initialBand,Transmitter &SUs, std::vector<Band_Details> &Bands,int Id);
+	bool ourAlgorithmRx(int initialBand,Receiver &SUs, std::vector<Band_Details> &Bands,int Id);
 	std::vector<int> channelHoppingSequence;
 	int timeSlot;
 
@@ -23,6 +24,9 @@ private:
 	int lowerBound2;
 	bool rendezvous;
 	int radioSendPacket;
-	std::vector<int> emptyBands;
+	std::vector<int> radiosWithEmptyBand;
+	std::vector<int> channelSequence;
+	bool firstRendezvous;
+	std::vector<bool> twoTimeSlotPassed;
 };
 

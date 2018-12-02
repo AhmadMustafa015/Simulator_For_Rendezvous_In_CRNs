@@ -26,6 +26,7 @@ void Initialization::Initialize()
 	intitialTransmittingAndReceiving(Tx,Rx, numberOfBands);
 }
 
+
 void Initialization::intitialTransmittingAndReceiving(std::vector<Transmitter> &Tx, std::vector<Receiver> &Rx, int numberOfBands)
 {
 	bool connected = false;
