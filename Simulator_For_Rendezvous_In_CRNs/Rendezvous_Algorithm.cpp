@@ -18,6 +18,7 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std
 		channelSequence[b - lowerBound2] = b % Bands.size();
 		channelSequence[Tx.numberOfRadio + (b - lowerBound2)] = (lowerBound1 + (b - lowerBound2)) % Bands.size();
 	}
+	std::cout << "channel sequence : ";
 	for(int i = 0; i < channelSequence.size();i++)
 		std::cout << channelSequence[i] << " ";
 	std::cout << std::endl;
@@ -27,9 +28,11 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std
 		if (Tx.scanningBands(Bands, channelHoppingSequence[i]))
 			radiosWithEmptyBand.push_back(i);
 	}
+	std::cout << "channel Hopping sequence : ";
 	for (int i = 0; i < channelHoppingSequence.size(); i++)
 		std::cout << channelHoppingSequence[i] << " ";
 	std::cout << std::endl;
+	std::cout << std::endl << "radio with empty band : ";
 	for (int i = 0; i < radiosWithEmptyBand.size(); i++)
 		std::cout << radiosWithEmptyBand[i] << " ";
 	std::cout << std::endl;
@@ -71,12 +74,14 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Receiver & RX, std::
 		firstRendezvous =  RX.listening(Bands[channelHoppingSequence[i]], ID) + firstRendezvous;
 		twoTimeSlotPassed[i] = true;
 	}
+	std::cout << "channel sequence : "  ;
 	for (int i = 0; i < channelSequence.size(); i++)
 		std::cout << channelSequence[i] << " ";
 	std::cout << std::endl;
+	std::cout << "channel Hopping  sequence : " ;
 	for (int i = 0; i < channelHoppingSequence.size(); i++)
 		std::cout << channelHoppingSequence[i] << " ";
-	std::cout << std::endl;
+	std::cout << std::endl << "radio with empty band : ";
 	for (int i = 0; i < radiosWithEmptyBand.size(); i++)
 		std::cout << radiosWithEmptyBand[i] << " ";
 	std::cout << std::endl;
@@ -177,6 +182,8 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 
 bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::vector<Band_Details>& Bands, int ID, int timeSlot)
 {
+	std::cout << "..................................................................................." << std::endl;
+	std::cout << "RX ID " << ID <<std::endl;
 	if (timeSlot % 4 == 0 || (radiosWithEmptyBand.size() == 0 && timeSlot % 2 == 0))
 	{
 		radiosWithEmptyBand.clear();
@@ -199,6 +206,17 @@ bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::v
 			//else
 				//radiosWithEmptyBand.erase(std::remove(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i), radiosWithEmptyBand.end());
 			twoTimeSlotPassed[i] = true;
+			std::cout << "channel sequence : ";
+			for (int i = 0; i < channelSequence.size(); i++)
+				std::cout << channelSequence[i] << " ";
+			std::cout << std::endl;
+			std::cout << "channel Hopping  sequence : ";
+			for (int i = 0; i < channelHoppingSequence.size(); i++)
+				std::cout << channelHoppingSequence[i] << " ";
+			std::cout << std::endl << "radio with empty band : ";
+			for (int i = 0; i < radiosWithEmptyBand.size(); i++)
+				std::cout << radiosWithEmptyBand[i] << " ";
+			std::cout << std::endl;
 			if (RX.listening(Bands[channelHoppingSequence[i]], ID))
 				return true;
 			return false;
@@ -218,10 +236,23 @@ bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::v
 					channelHoppingSequence[i] = channelSequence[std::distance(channelSequence.begin(), itr) + 1];
 				}
 				if (RX.scanningBands(Bands, channelHoppingSequence[i]))
+				{
 					radiosWithEmptyBand.push_back(i);
+					std::cout << "channel Hopping  sequence : ";
+					for (int i = 0; i < channelHoppingSequence.size(); i++)
+						std::cout << channelHoppingSequence[i] << " ";
+					std::cout << std::endl << "radio with empty band : ";
+					for (int i = 0; i < radiosWithEmptyBand.size(); i++)
+						std::cout << radiosWithEmptyBand[i] << " ";
+					std::cout << std::endl;
+				}
 				else
 				{
 					radiosWithEmptyBand.erase(std::remove(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i), radiosWithEmptyBand.end());
+					std::cout << std::endl << "radio with empty band : ";
+					for (int i = 0; i < radiosWithEmptyBand.size(); i++)
+						std::cout << radiosWithEmptyBand[i] << " ";
+					std::cout << std::endl;
 				}
 				twoTimeSlotPassed[i] = true;
 				if (RX.listening(Bands[channelHoppingSequence[i]], ID))
@@ -231,9 +262,23 @@ bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::v
 			else if (twoTimeSlotPassed[i])
 			{
 				if (RX.scanningBands(Bands, channelHoppingSequence[i]))
+				{
 					radiosWithEmptyBand.push_back(i);
+					std::cout << "channel Hopping  sequence : ";
+					for (int i = 0; i < channelHoppingSequence.size(); i++)
+						std::cout << channelHoppingSequence[i] << " ";
+					std::cout << std::endl << "radio with empty band : ";
+					for (int i = 0; i < radiosWithEmptyBand.size(); i++)
+						std::cout << radiosWithEmptyBand[i] << " ";
+					std::cout << std::endl;
+				}
 				else
+				{
 					radiosWithEmptyBand.erase(std::remove(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i), radiosWithEmptyBand.end());
+					for (int i = 0; i < radiosWithEmptyBand.size(); i++)
+						std::cout << radiosWithEmptyBand[i] << " ";
+					std::cout << std::endl;
+				}
 				twoTimeSlotPassed[i] = false;
 				if (RX.listening(Bands[channelHoppingSequence[i]], ID))
 					return true;
