@@ -81,7 +81,7 @@ void Initialization::Initialize()
 		timeSlot++;
 		std::cout << std::endl << "////////////////////////////////////////////////////////////////" << timeSlot << std::endl;
 	}
-	std::cout << "Successful Randezvous in : " << timeSlot << " Time slots";
+	std::cout << "Successful Randezvous in : " << timeSlot << " Time slots"<<std::endl;
 }
 
 
