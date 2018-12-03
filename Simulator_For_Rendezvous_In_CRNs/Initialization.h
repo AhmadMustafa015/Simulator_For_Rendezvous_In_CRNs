@@ -24,7 +24,7 @@ public:
 	std::vector<Band_Details> Bands;
 private:
 	int numberOfBands;
-	int timeSlots;
+	int timeSlot;
 	int numberOfSUs;
 	double PUProbON;
 	bool rendezvous;
