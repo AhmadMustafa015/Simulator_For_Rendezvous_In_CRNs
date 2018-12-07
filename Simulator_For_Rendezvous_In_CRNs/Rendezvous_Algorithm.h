@@ -1,5 +1,5 @@
 #pragma once
-#include<vector>
+#include <vector>
 #include <cmath>
 #include<random>
 #include"Band_Details.h"
@@ -27,5 +27,13 @@ private:
 	std::vector<int> radiosWithEmptyBand;
 	std::vector<int> channelSequence;
 	std::vector<bool> twoTimeSlotPassed;
+	std::vector<int> randomStay;
+	int p;
+	std::vector<int> numberOfStayCounter;
+	int returnMaxValueInVector(const std::vector<int> &V) const;
+	std::vector<int> specialBands;
+	std::vector<int> iterative;
+	void setSpecialBands(int B);
+	void removeFromSpecialBand(int B);
 };
 

@@ -44,18 +44,11 @@ void Initialization::Initialize()
 		*RendezvouzRxIterator = Rendezvous_Algorithm(Rx[counter].allocatedBand, Rx[counter], Bands, counter);
 		counter++;
 	}
-	for (int i = 0; i < numberOfSUs / 2; i++)
+	/*for (int i = 0; i < numberOfSUs / 2; i++)
 	{
 		successfulRendezvousVsSU[i] = channelHoppingRX[i].firstRendezvous;
-	}
-	rendezvous = true;
-	for (int i = 0; i < numberOfSUs / 2; i++)
-	{
-		if (!successfulRendezvousVsSU[i])
-			rendezvous = false;
-	}
-	timeSlot++;
-	while (!rendezvous)
+	}*/
+	for (int T = 0; T < timeSlot; T++)
 	{
 		for (int i = 0; i < Bands.size(); i++)
 		{
@@ -68,20 +61,20 @@ void Initialization::Initialize()
 		counter = 0;
 		for (int i = 0; i < numberOfSUs / 2; i++)
 			if (!successfulRendezvousVsSU[i])
-			channelHoppingTX[i].ourAlgorithmTx(Tx[i].allocatedBand, Tx[i], Bands, i , timeSlot);
+				channelHoppingTX[i].ourAlgorithmTx(Tx[i].allocatedBand, Tx[i], Bands, i, T);
 		for (int i = 0; i < numberOfSUs / 2; i++)
 		{
-			if(!successfulRendezvousVsSU[i])
-				successfulRendezvousVsSU[i] = channelHoppingRX[i].ourAlgorithmRx(Rx[i].allocatedBand, Rx[i], Bands, i,timeSlot);
+			if (!successfulRendezvousVsSU[i])
+				successfulRendezvousVsSU[i] = channelHoppingRX[i].ourAlgorithmRx(Rx[i].allocatedBand, Rx[i], Bands, i, T);
 			counter += successfulRendezvousVsSU[i];
 		}
 		rendezvous = (numberOfSUs / 2) == (counter);
 		for (int i = 0; i < successfulRendezvousVsSU.size(); i++)
 			std::cout << successfulRendezvousVsSU[i] << " ";
-		timeSlot++;
-		std::cout << std::endl << "////////////////////////////////////////////////////////////////" << timeSlot << std::endl;
+		//std::cout << std::endl << "////////////////////////////////////////////////////////////////" << timeSlot << std::endl;
 	}
-	std::cout << "Successful Randezvous in : " << timeSlot << " Time slots"<<std::endl;
+	std::cout << "Successful Randezvous in : " << timeSlot << " Time slots" << std::endl;
+		
 }
 
 

@@ -4,6 +4,7 @@
 
 std::default_random_engine generator5(1);
 Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std::vector<Band_Details> &Bands, int ID)
+	:numberOfStayCounter(Tx.numberOfRadio, 0), randomStay(Tx.numberOfRadio, 0)
 {
 	distance = 2 * Tx.numberOfRadio;
 	std::cout << "distance for TX ID " << ID << " = " << distance << " initial Band =  "<< initialBand << std::endl;
@@ -91,7 +92,8 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 	std::cout << "..................................................................................." << std::endl;
 	std::cout << "TX ID =  " << ID << std::endl;
 	//if(timeSlot == 4 * ) 
-	if (timeSlot % 4 == 0 || (radiosWithEmptyBand.empty() && timeSlot % 2 == 0))
+	if ( returnMaxValueInVector(radiosWithEmptyBand) >= returnMaxValueInVector(randomStay) 
+		|| (radiosWithEmptyBand.empty() && timeSlot % 2 == 0))
 	{
 		radiosWithEmptyBand.clear();
 		channelSequence.clear();
@@ -108,8 +110,15 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 		for (int i = 0; i < Tx.numberOfRadio; i++)
 		{
 			channelHoppingSequence[i] = channelSequence[i * 2];
-			if (Tx.scanningBands(Bands, channelHoppingSequence[i]))    
+			if (Tx.scanningBands(Bands, channelHoppingSequence[i]))
+			{
 				radiosWithEmptyBand.push_back(i);
+				setSpecialBands(channelHoppingSequence[i]);
+			}
+			else
+			{
+				removeFromSpecialBand(channelHoppingSequence[i]);
+			}
 			//else
 				//radiosWithEmptyBand.erase(std::remove(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i), radiosWithEmptyBand.end());
 		}
@@ -126,7 +135,7 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 	{
 		for (int i = 0; i < Tx.numberOfRadio; i++)
 		{
-			if (radiosWithEmptyBand.empty() || std::find(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i) == radiosWithEmptyBand.end())
+			if (radiosWithEmptyBand.empty() || std::find(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i) == radiosWithEmptyBand.end() || numberOfStayCounter[i] > randomStay[i])
 			{
 				//++channelHoppingSequence[i];
 				if (channelHoppingSequence[i] == upperBound1 || std::find(channelHoppingSequence.begin()
@@ -141,10 +150,14 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 							if (Tx.scanningBands(Bands, channelHoppingSequence[i]))
 							{
 								radiosWithEmptyBand.push_back(i);
+								setSpecialBands(channelHoppingSequence[i]);
 								break;
 							}
 							else
+							{
 								radiosWithEmptyBand.erase(std::remove(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i), radiosWithEmptyBand.end());
+								removeFromSpecialBand(channelHoppingSequence[i]);
+							}
 						}
 					}
 				}
@@ -152,12 +165,35 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 				{
 					std::vector<int>::iterator itr = std::find(channelSequence.begin(), channelSequence.end(), channelHoppingSequence[i]);
 					channelHoppingSequence[i] = channelSequence[std::distance(channelSequence.begin(), itr) + 1];
+					std::uniform_int_distribution<int> distr(2, p);
+					randomStay[i] = distr(generator5);
+					numberOfStayCounter[i] = 0;
 					if (Tx.scanningBands(Bands, channelHoppingSequence[i]))
+					{
 						radiosWithEmptyBand.push_back(i);
+						setSpecialBands(channelHoppingSequence[i]);
+					}
 					else
+					{
 						radiosWithEmptyBand.erase(std::remove(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i), radiosWithEmptyBand.end());
+						removeFromSpecialBand(channelHoppingSequence[i]);
+					}
 				}
 			}
+			else
+			{
+				if (!Tx.scanningBands(Bands, channelHoppingSequence[i]))
+				{
+					radiosWithEmptyBand.erase(std::remove(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i), radiosWithEmptyBand.end());
+					removeFromSpecialBand(channelHoppingSequence[i]);
+				}
+				else
+				{
+					setSpecialBands(channelHoppingSequence[i]);
+				}
+				numberOfStayCounter[i]++;
+			}
+			
 		}
 		std::cout << "Radio With empty Band : ";
 		for (int i = 0; i < radiosWithEmptyBand.size(); i++)
@@ -288,3 +324,68 @@ bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::v
 		}
 	}
 }
+
+int Rendezvous_Algorithm::returnMaxValueInVector(const std::vector<int>& V) const
+{
+	int max = 0;
+	for (int i = 0; i < V.size(); i++)
+	{
+		if (max < V[i])
+			max = V[i];
+	}
+	return max;
+}
+
+void Rendezvous_Algorithm::setSpecialBands(int B)
+{
+	int firstOutOfOrder, location;
+	int temp;
+	if (std::find(specialBands.begin(), specialBands.end(), B) == specialBands.end())
+	{
+		specialBands.push_back(B);
+		iterative.push_back(1);
+	}
+	else
+	{
+		std::vector<int>::iterator itr = std::find(specialBands.begin(), specialBands.end(), B);
+		++iterative[std::distance(specialBands.begin(), itr)];
+	}
+	for (firstOutOfOrder = 1; firstOutOfOrder < specialBands.size(); firstOutOfOrder++)
+	{
+		if (numberOfStayCounter[firstOutOfOrder] < numberOfStayCounter[firstOutOfOrder - 1])
+		{
+			temp = specialBands[firstOutOfOrder];
+			location = firstOutOfOrder;
+			do
+			{
+				specialBands[location] = specialBands[location - 1];
+				location--;
+			} while (location > 0 && numberOfStayCounter[location - 1] > temp);
+			specialBands[location] = temp;
+		}
+	}
+}
+void Rendezvous_Algorithm::removeFromSpecialBand(int B)
+{
+	specialBands.erase(std::remove(specialBands.begin(), specialBands.end(), B), specialBands.end());
+	iterative.erase(std::remove(iterative.begin(), iterative.end(), B), iterative.end());
+}
+/*void insertionSort(int list[], int listLength)
+{
+int firstOutOfOrder, location;
+int temp;
+for (firstOutOfOrder = 1; firstOutOfOrder < listLength;
+firstOutOfOrder++)
+if (list[firstOutOfOrder] < list[firstOutOfOrder - 1])
+{
+temp = list[firstOutOfOrder];
+location = firstOutOfOrder;
+do
+{
+list[location] = list[location - 1];
+location--;
+}
+while (location > 0 && list[location - 1] > temp);
+list[location] = temp;
+}
+} //end insertionSort*/
