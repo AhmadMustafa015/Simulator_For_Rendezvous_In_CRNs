@@ -29,12 +29,12 @@ void SecondaryUser::emptyAllResult() {
 
 void Transmitter::sendPacket(Band_Details &band,int ID, int radioNumber)
 {
-	band.packetVsId.push_back(ID);
+	band.packetVsID.push_back(ID);
 }
 
 bool Receiver::listening(Band_Details &band, int ID)
 {
-	if (band.packetVsId.size() == 1 && band.packetVsId[0] == ID)
+	if (band.packetVsID.size() == 1 && band.packetVsID[0] == ID)
 	{
 		//std::cout << std::endl <<"rendezvous" << ID;
 		return true;

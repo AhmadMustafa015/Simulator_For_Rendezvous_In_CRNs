@@ -31,17 +31,17 @@ void Initialization::Initialize()
 	{
 		SUsConstruct->scanningBands(Bands);
 	}*/
-	intitialTransmittingAndReceiving(Tx,Rx, numberOfBands);
+	intitialTransmittingAndReceiving(Tx, Rx, numberOfBands);
 	counter = 0;
-	for (RendezvouzTxIterator = channelHoppingTX.begin(); RendezvouzTxIterator != channelHoppingTX.end(); RendezvouzTxIterator++)
+	for (RendezvousTxIterator = channelHoppingTX.begin(); RendezvousTxIterator != channelHoppingTX.end(); RendezvousTxIterator++)
 	{
-		*RendezvouzTxIterator = Rendezvous_Algorithm(Tx[counter].allocatedBand, Tx[counter], Bands, counter);
+		*RendezvousTxIterator = Rendezvous_Algorithm(Tx[counter].allocatedBand, Tx[counter], Bands, counter);
 		counter++;
 	}
 	counter = 0;
-	for (RendezvouzRxIterator = channelHoppingRX.begin(); RendezvouzRxIterator != channelHoppingRX.end(); RendezvouzRxIterator++)
+	for (RendezvousRxIterator = channelHoppingRX.begin(); RendezvousRxIterator != channelHoppingRX.end(); RendezvousRxIterator++)
 	{
-		*RendezvouzRxIterator = Rendezvous_Algorithm(Rx[counter].allocatedBand, Rx[counter], Bands, counter);
+		*RendezvousRxIterator = Rendezvous_Algorithm(Rx[counter].allocatedBand, Rx[counter], Bands, counter);
 		counter++;
 	}
 	/*for (int i = 0; i < numberOfSUs / 2; i++)
@@ -54,7 +54,7 @@ void Initialization::Initialize()
 		{
 			for (int j = 0; j < numberOfSUs / 2; j++)
 			{
-				if (!successfulRendezvousVsSU[j] && std::find(Bands[i].packetVsId.begin(), Bands[i].packetVsId.end(), j) != Bands[i].packetVsId.end())
+				if (!successfulRendezvousVsSU[j] && std::find(Bands[i].packetVsID.begin(), Bands[i].packetVsID.end(), j) != Bands[i].packetVsID.end())
 					Bands[i].clearPacket();
 			}
 		}
@@ -71,6 +71,13 @@ void Initialization::Initialize()
 		rendezvous = (numberOfSUs / 2) == (counter);
 		for (int i = 0; i < successfulRendezvousVsSU.size(); i++)
 			std::cout << successfulRendezvousVsSU[i] << " ";
+		for (int i = 0; i < Bands.size(); i++)
+		{
+			if (Bands[i].isEmpty())
+				Bands[i].setState((double(rand()) / double(RAND_MAX)) >= PUProbON);
+			else
+				Bands[i].setState((double(rand()) / double(RAND_MAX)) <= PUProbON);
+		}
 		//std::cout << std::endl << "////////////////////////////////////////////////////////////////" << timeSlot << std::endl;
 	}
 	std::cout << "Successful Randezvous in : " << timeSlot << " Time slots" << std::endl;
@@ -99,13 +106,13 @@ void Initialization::intitialTransmittingAndReceiving(std::vector<Transmitter> &
 		}
 		Tx[i].bandAllocation(randomBand);
 		Rx[i].bandAllocation(randomBand);
-		PUArrival(randomBand, Bands);
+		PUArrival(randomBand, Bands, false);
 		//arrivalBand = SUs[0].allocatedBand;
 		connected = false;
 	}
 }
 
-void Initialization::PUArrival(int arrivalBand, std::vector<Band_Details> &Bands)
+void Initialization::PUArrival(int arrivalBand, std::vector<Band_Details> &Bands, bool State)
 {
-	Bands[arrivalBand].toggleState();
+	Bands[arrivalBand].setState(State);
 }

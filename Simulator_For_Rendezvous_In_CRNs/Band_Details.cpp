@@ -18,7 +18,7 @@ Band_Details::~Band_Details()
 
 void Band_Details::clearPacket()
 {
-	std::vector<int>().swap(packetVsId);
+	std::vector<int>().swap(packetVsID);
 }
 
 bool Band_Details::isEmpty() const
@@ -30,7 +30,9 @@ bool Band_Details::getProbON() const
 	return ProbON;
 }
 
-void Band_Details::toggleState()
+void Band_Details::setState(bool State)
 {
-	PUOFF = !PUOFF;
+	PUOFF = State;
 }
+
+
