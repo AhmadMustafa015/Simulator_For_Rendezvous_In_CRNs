@@ -36,6 +36,7 @@ private:
 	std::vector<Rendezvous_Algorithm>::iterator RendezvousRxIterator;
 	std::vector<Rendezvous_Algorithm> channelHoppingTX;
 	std::vector<Rendezvous_Algorithm> channelHoppingRX;
+	std::vector<int> BandsOccupiedBySUs;
 	int counter;
 	std::vector<bool> successfulRendezvousVsSU;
 };

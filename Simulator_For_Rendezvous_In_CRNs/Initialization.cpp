@@ -2,10 +2,11 @@
 
 std::default_random_engine generator0(1);
 //std::mt19937 generator0(rand_dev0());
-Initialization::Initialization(int numOfBands, int numOfSUs,double PUProb,int timeSlots)
-	:Tx(numOfSUs/2), Bands(numOfBands), Rx(numOfSUs/2)
-	,channelHoppingRX(numOfSUs/2),channelHoppingTX(numOfSUs/2)
-	,successfulRendezvousVsSU(numOfSUs/2, false)
+Initialization::Initialization(int numOfBands, int numOfSUs, double PUProb, int timeSlots)
+	:Tx(numOfSUs / 2), Bands(numOfBands), Rx(numOfSUs / 2)
+	, channelHoppingRX(numOfSUs / 2), channelHoppingTX(numOfSUs / 2)
+	, successfulRendezvousVsSU(numOfSUs / 2, false)
+	, BandsOccupiedBySUs(numOfSUs / 2)
 {
 	numberOfBands = numOfBands;
 	numberOfSUs = numOfSUs;
@@ -48,6 +49,7 @@ void Initialization::Initialize()
 	{
 		successfulRendezvousVsSU[i] = channelHoppingRX[i].firstRendezvous;
 	}*/
+
 	for (int T = 0; T < timeSlot; T++)
 	{
 		for (int i = 0; i < Bands.size(); i++)
@@ -63,12 +65,11 @@ void Initialization::Initialize()
 			if (!successfulRendezvousVsSU[i])
 				channelHoppingTX[i].ourAlgorithmTx(Tx[i].allocatedBand, Tx[i], Bands, i, T);
 		for (int i = 0; i < numberOfSUs / 2; i++)
-		{
 			if (!successfulRendezvousVsSU[i])
 				successfulRendezvousVsSU[i] = channelHoppingRX[i].ourAlgorithmRx(Rx[i].allocatedBand, Rx[i], Bands, i, T);
-			counter += successfulRendezvousVsSU[i];
-		}
-		rendezvous = (numberOfSUs / 2) == (counter);
+			//counter += successfulRendezvousVsSU[i];
+		
+		//rendezvous = (numberOfSUs / 2) == (counter);
 		for (int i = 0; i < successfulRendezvousVsSU.size(); i++)
 			std::cout << successfulRendezvousVsSU[i] << " ";
 		for (int i = 0; i < Bands.size(); i++)
@@ -78,9 +79,14 @@ void Initialization::Initialize()
 			else
 				Bands[i].setState((double(rand()) / double(RAND_MAX)) <= PUProbON);
 		}
-		//std::cout << std::endl << "////////////////////////////////////////////////////////////////" << timeSlot << std::endl;
+		for (int i = 0; i < BandsOccupiedBySUs.size(); i++)
+		{
+			if (!Bands[BandsOccupiedBySUs[i]].isEmpty())
+				successfulRendezvousVsSU[i] = false;
+		}
+		std::cout << std::endl << "////////////////////////////////////////////////////////////////" << timeSlot << std::endl;
 	}
-	std::cout << "Successful Randezvous in : " << timeSlot << " Time slots" << std::endl;
+	//std::cout << "Successful Randezvous in : " << timeSlot << " Time slots" << std::endl;
 		
 }
 
@@ -90,7 +96,7 @@ void Initialization::intitialTransmittingAndReceiving(std::vector<Transmitter> &
 	bool connected = false;
 	int randomBand;
 	std::vector<int> allocatedBands;
-	std::uniform_int_distribution<int> distr(0, numberOfBands-1);
+	std::uniform_int_distribution<int> distr(0, numberOfBands - 1);
 	//std::cout << SUs.size();
 	for (unsigned int i = 0; i < Tx.size(); i++)
 	{

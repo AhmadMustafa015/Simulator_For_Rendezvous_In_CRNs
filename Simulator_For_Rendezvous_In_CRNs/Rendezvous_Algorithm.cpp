@@ -50,7 +50,7 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std
 	std::cout << "..................................................................................." << std::endl;
 }
 Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Receiver & RX, std::vector<Band_Details>& Bands, int ID)
-	:twoTimeSlotPassed(RX.numberOfRadio , false)
+	:twoTimeSlotPassed(RX.numberOfRadio, false)
 {
 	firstRendezvous = false;
 	std::cout << "..................................................................................." << std::endl;
