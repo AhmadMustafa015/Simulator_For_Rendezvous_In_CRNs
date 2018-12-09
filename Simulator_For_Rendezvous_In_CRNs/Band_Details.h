@@ -9,9 +9,9 @@ public:
 	Band_Details(double ProbON);
 	bool isEmpty() const;
 	bool getProbON() const;
-	void toggleState();
+	void setState(bool PUState);
 	~Band_Details();
-	std::vector<int> packetVsId;
+	std::vector<int> packetVsID;
 	void clearPacket();
 private:
 	bool PUOFF;
@@ -21,10 +21,8 @@ private:
 class DeterministicBand : public Band_Details
 {
 public:
-	DeterministicBand(double, int);
 	bool isEmpty(double T, int bandN) const;
 
 private:
-	int successfulVsTimePUActiveForBandN;
-	double timeVSuccessfulReq;
+
 };

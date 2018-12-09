@@ -28,12 +28,12 @@ private:
 	int numberOfSUs;
 	double PUProbON;
 	bool rendezvous;
-	void PUArrival(int arrivalBand, std::vector<Band_Details> &Bands);
+	void PUArrival(int arrivalBand, std::vector<Band_Details> &Bands, bool State);
 	void intitialTransmittingAndReceiving(std::vector<Transmitter> &SUs, std::vector<Receiver> &SU,int numberOfBands);
 	std::vector<Band_Details>::iterator bandConstruct;
 	std::vector<SecondaryUser>::iterator SUsConstruct;
-	std::vector<Rendezvous_Algorithm>::iterator RendezvouzTxIterator;
-	std::vector<Rendezvous_Algorithm>::iterator RendezvouzRxIterator;
+	std::vector<Rendezvous_Algorithm>::iterator RendezvousTxIterator;
+	std::vector<Rendezvous_Algorithm>::iterator RendezvousRxIterator;
 	std::vector<Rendezvous_Algorithm> channelHoppingTX;
 	std::vector<Rendezvous_Algorithm> channelHoppingRX;
 	int counter;
