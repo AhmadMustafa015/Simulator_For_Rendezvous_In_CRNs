@@ -15,7 +15,7 @@ public:
 		std::vector<SecondaryUser> SUs(numberOfSUs);
 
 	};
-	Initialization(int numOfBands, int numOfSUs, double PUProb);
+	Initialization(int numOfBands, int numOfSUs, double PUProb,int timeSlot);
 	~Initialization() {};
 	void Initialize();
 	int arrivalBand;

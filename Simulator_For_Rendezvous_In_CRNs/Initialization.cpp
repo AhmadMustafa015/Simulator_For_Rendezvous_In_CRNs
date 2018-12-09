@@ -2,17 +2,17 @@
 
 std::default_random_engine generator0(1);
 //std::mt19937 generator0(rand_dev0());
-Initialization::Initialization(int numOfBands, int numOfSUs,double PUProb)
+Initialization::Initialization(int numOfBands, int numOfSUs,double PUProb,int timeSlots)
 	:Tx(numOfSUs/2), Bands(numOfBands), Rx(numOfSUs/2)
 	,channelHoppingRX(numOfSUs/2),channelHoppingTX(numOfSUs/2)
 	,successfulRendezvousVsSU(numOfSUs/2, false)
 {
-	timeSlot = 0;
 	numberOfBands = numOfBands;
 	numberOfSUs = numOfSUs;
 	PUProbON = PUProb;
 	Bands.reserve(numberOfBands);
 	rendezvous = false;
+	timeSlot = timeSlots;
 }
 
 void Initialization::Initialize()

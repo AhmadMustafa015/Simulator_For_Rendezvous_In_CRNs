@@ -92,9 +92,9 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 	std::cout << "..................................................................................." << std::endl;
 	std::cout << "TX ID =  " << ID << std::endl;
 	//if(timeSlot == 4 * ) 
-	if ( returnMaxValueInVector(radiosWithEmptyBand) >= returnMaxValueInVector(randomStay) 
-		|| (radiosWithEmptyBand.empty() && timeSlot % 2 == 0))
-	{
+	if ( returnMaxValueInVector(numberOfStayCounter) >= returnMaxValueInVector(randomStay) 
+		|| (radiosWithEmptyBand.empty() && timeSlot % 2 == 0)) //increase bound if most radio should 
+	{														  //stay finish
 		radiosWithEmptyBand.clear();
 		channelSequence.clear();
 		lowerBound1 = (upperBound1 + 1) % Bands.size();
@@ -117,7 +117,7 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 			}
 			else
 			{
-				removeFromSpecialBand(channelHoppingSequence[i]);
+				removeFromSpecialBand(channelHoppingSequence[i]); //if there is PU
 			}
 			//else
 				//radiosWithEmptyBand.erase(std::remove(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i), radiosWithEmptyBand.end());
