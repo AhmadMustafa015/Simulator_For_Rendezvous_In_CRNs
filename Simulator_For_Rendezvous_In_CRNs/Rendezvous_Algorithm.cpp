@@ -8,6 +8,7 @@ std::uniform_int_distribution<int> distrRandomStay(2, 5);
 Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std::vector<Band_Details> &Bands, int ID)
 	:numberOfStayCounter(Tx.numberOfRadio, 0), randomStay(Tx.numberOfRadio, 0)
 {
+	radioThatSendPacket = 0;
 	logical2 = false;
 	specialBandSendingTimes = 0;
 	state = false;
