@@ -8,6 +8,7 @@ std::uniform_int_distribution<int> distrRandomStay(2, 5);
 Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std::vector<Band_Details> &Bands, int ID)
 	:numberOfStayCounter(Tx.numberOfRadio, 0), randomStay(Tx.numberOfRadio, 0)
 {
+	radioThatSendPacket = 0;
 	logical2 = false;
 	specialBandSendingTimes = 0;
 	state = false;
@@ -81,6 +82,8 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Receiver & RX, std::
 		channelHoppingSequence[i] = channelSequence[i * 2];
 		if (RX.scanningBands(Bands, channelHoppingSequence[i]))
 			radiosWithEmptyBand.push_back(i);
+		if (RX.listening(Bands[channelHoppingSequence[i]], ID))
+			RX.allocatedBand = channelHoppingSequence[i];
 		firstRendezvous =  RX.listening(Bands[channelHoppingSequence[i]], ID) + firstRendezvous;
 		twoTimeSlotPassed[i] = true;
 	}
@@ -170,11 +173,11 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 					removeFromSpecialBand(channelHoppingSequence[i]); //if there is PU
 				}
 			}
-			//std::uniform_int_distribution<int> distr(1, radiosWithEmptyBand.size());
 			for (radioThatSendPacket; radioThatSendPacket < Tx.numberOfRadio; radioThatSendPacket++)
 			{
 				if (std::find(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), radioThatSendPacket) != radiosWithEmptyBand.end())
 				{
+					std::uniform_int_distribution<int> distr(1, radiosWithEmptyBand.size());
 					Tx.sendPacket(Bands[channelHoppingSequence[radioThatSendPacket]], ID, radioThatSendPacket);
 					specialBandSendingTimes++;
 					std::cout << "radio send Packet = " << radioThatSendPacket << std::endl;
@@ -343,6 +346,7 @@ bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::v
 					}
 					radiosWithEmptyBand.clear();
 					radioThatSendPacket = 0;
+					RX.allocatedBand = channelHoppingSequence[i];
 					return true;
 				}
 			}
@@ -368,7 +372,17 @@ bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::v
 					removeFromSpecialBand(channelHoppingSequence[i]); //if there is PU
 				}
 				if (RX.listening(Bands[channelHoppingSequence[i]], ID))
+				{
+					for (int r = 0; r < RX.numberOfRadio; r++)
+					{
+						randomStay[r] = 0;
+						numberOfStayCounter[r] = 0;
+					}
+					radiosWithEmptyBand.clear();
+					radioThatSendPacket = 0;
+					RX.allocatedBand = channelHoppingSequence[i];
 					return true;
+				}
 			}
 			for (int i = 0; i < RX.numberOfRadio; i++)
 			{
@@ -383,6 +397,7 @@ bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::v
 						}
 						radiosWithEmptyBand.clear();
 						radioThatSendPacket = 0;
+						RX.allocatedBand = channelHoppingSequence[i];
 						return true;
 					}
 				}
@@ -439,6 +454,7 @@ bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::v
 									}
 									radiosWithEmptyBand.clear();
 									radioThatSendPacket = 0;
+									RX.allocatedBand = channelHoppingSequence[i];
 									return true;
 								}
 								break;
@@ -472,6 +488,7 @@ bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::v
 							}
 							radiosWithEmptyBand.clear();
 							radioThatSendPacket = 0;
+							RX.allocatedBand = channelHoppingSequence[i];
 							return true;
 						}
 					}
@@ -504,6 +521,7 @@ bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::v
 						}
 						radiosWithEmptyBand.clear();
 						radioThatSendPacket = 0;
+						RX.allocatedBand = channelHoppingSequence[i];
 						return true;
 					}
 					setSpecialBands(channelHoppingSequence[i]);

@@ -6,7 +6,6 @@ Initialization::Initialization(int numOfBands, int numOfSUs, double PUProb, int 
 	:Tx(numOfSUs / 2), Bands(numOfBands), Rx(numOfSUs / 2)
 	, channelHoppingRX(numOfSUs / 2), channelHoppingTX(numOfSUs / 2)
 	, successfulRendezvousVsSU(numOfSUs / 2, false)
-	, BandsOccupiedBySUs(numOfSUs / 2)
 {
 	numberOfBands = numOfBands;
 	numberOfSUs = numOfSUs;
@@ -48,6 +47,7 @@ void Initialization::Initialize()
 	for (int i = 0; i < numberOfSUs / 2; i++)
 	{
 		successfulRendezvousVsSU[i] = channelHoppingRX[i].firstRendezvous;
+		channelHoppingRX[i].firstRendezvous = false;
 	}
 	for (int T = 0; T < timeSlot; T++)
 	{
@@ -80,10 +80,24 @@ void Initialization::Initialize()
 		//rendezvous = (numberOfSUs / 2) == (counter);
 		for (int i = 0; i < successfulRendezvousVsSU.size(); i++)
 			std::cout << successfulRendezvousVsSU[i] << " ";
-		for (int i = 0; i < BandsOccupiedBySUs.size(); i++)
+		/*for (int i = 0; i < BandsOccupiedBySUs.size(); i++)
 		{
 			if (!Bands[BandsOccupiedBySUs[i]].isEmpty())
 				successfulRendezvousVsSU[i] = false;
+		}*/
+		for (int i = 0; i < numberOfSUs / 2; i++)
+		{
+			if (successfulRendezvousVsSU[i] && !Bands[Rx[i].allocatedBand].isEmpty())
+			{
+				std::cout << "PU come in band number " << Rx[i].allocatedBand << " " << std::endl;
+				successfulRendezvousVsSU[i] = false;
+				RendezvousTxIterator = channelHoppingTX.begin() + i;
+				*RendezvousTxIterator = Rendezvous_Algorithm(Rx[i].allocatedBand, Tx[i], Bands, i);
+				RendezvousRxIterator = channelHoppingRX.begin() + i;
+				*RendezvousRxIterator = Rendezvous_Algorithm(Rx[i].allocatedBand, Rx[i], Bands, i);
+				successfulRendezvousVsSU[i] = channelHoppingRX[i].firstRendezvous;
+				channelHoppingRX[i].firstRendezvous = false;
+			}
 		}
 		std::cout << std::endl << "////////////////////////////////////////////////////////////////" << T << std::endl;
 	}
