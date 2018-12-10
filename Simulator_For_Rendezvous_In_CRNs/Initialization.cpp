@@ -79,13 +79,6 @@ void Initialization::Initialize()
 		//rendezvous = (numberOfSUs / 2) == (counter);
 		for (int i = 0; i < successfulRendezvousVsSU.size(); i++)
 			std::cout << successfulRendezvousVsSU[i] << " ";
-		for (int i = 0; i < Bands.size(); i++)
-		{
-			if (Bands[i].isEmpty())
-				Bands[i].setState((double(rand()) / double(RAND_MAX)) >= PUProbON);
-			else
-				Bands[i].setState((double(rand()) / double(RAND_MAX)) <= PUProbON);
-		}
 		for (int i = 0; i < BandsOccupiedBySUs.size(); i++)
 		{
 			if (!Bands[BandsOccupiedBySUs[i]].isEmpty())
