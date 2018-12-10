@@ -35,5 +35,11 @@ private:
 	std::vector<int> iterative;
 	void setSpecialBands(int B);
 	void removeFromSpecialBand(int B);
+	int RandomStayConst;
+	bool didntFinishWholeBound;
+	bool state = false;
+	int specialBandSendingTimes;
+	int radioThatSendPacket;
+	bool logical2;
 };
 

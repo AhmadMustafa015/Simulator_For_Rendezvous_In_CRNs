@@ -44,21 +44,29 @@ void Initialization::Initialize()
 		*RendezvousRxIterator = Rendezvous_Algorithm(Rx[counter].allocatedBand, Rx[counter], Bands, counter);
 		counter++;
 	}
-	/*for (int i = 0; i < numberOfSUs / 2; i++)
+	for (int i = 0; i < numberOfSUs / 2; i++)
 	{
 		successfulRendezvousVsSU[i] = channelHoppingRX[i].firstRendezvous;
-	}*/
+	}
 	for (int T = 0; T < timeSlot; T++)
 	{
 		for (int i = 0; i < Bands.size(); i++)
 		{
+			if (Bands[i].isEmpty())
+				Bands[i].setState((double(rand()) / double(RAND_MAX)) >= PUProbON);
+			else
+				Bands[i].setState((double(rand()) / double(RAND_MAX)) <= PUProbON);
 			for (int j = 0; j < numberOfSUs / 2; j++)
 			{
 				if (!successfulRendezvousVsSU[j] && std::find(Bands[i].packetVsID.begin(), Bands[i].packetVsID.end(), j) != Bands[i].packetVsID.end())
 					Bands[i].clearPacket();
+				else if(!Bands[i].isEmpty())
+				{
+					Bands[i].clearPacket();
+				}
 			}
 		}
-		counter = 0;
+	//	counter = 0;
 		for (int i = 0; i < numberOfSUs / 2; i++)
 			if (!successfulRendezvousVsSU[i])
 				channelHoppingTX[i].ourAlgorithmTx(Tx[i].allocatedBand, Tx[i], Bands, i, T);
@@ -66,22 +74,15 @@ void Initialization::Initialize()
 		{
 			if (!successfulRendezvousVsSU[i])
 				successfulRendezvousVsSU[i] = channelHoppingRX[i].ourAlgorithmRx(Rx[i].allocatedBand, Rx[i], Bands, i, T);
-			counter += successfulRendezvousVsSU[i];
+		//	counter += successfulRendezvousVsSU[i];
 		}
-		rendezvous = (numberOfSUs / 2) == (counter);
-		for (int i = 0; i < successfulRendezvousVsSU.size(); i++)
-			std::cout << successfulRendezvousVsSU[i] << " ";
-		for (int i = 0; i < Bands.size(); i++)
-		{
-			if (Bands[i].isEmpty())
-				Bands[i].setState((double(rand()) / double(RAND_MAX)) >= PUProbON);
-			else
-				Bands[i].setState((double(rand()) / double(RAND_MAX)) <= PUProbON);
-		}
+	//	rendezvous = (numberOfSUs / 2) == (counter);
+	//	for (int i = 0; i < successfulRendezvousVsSU.size(); i++)
+	//		std::cout << successfulRendezvousVsSU[i] << " ";
 		//std::cout << std::endl << "////////////////////////////////////////////////////////////////" << timeSlot << std::endl;
 	}
 	std::cout << "Successful Randezvous in : " << timeSlot << " Time slots" << std::endl;
-		
+
 }
 
 
