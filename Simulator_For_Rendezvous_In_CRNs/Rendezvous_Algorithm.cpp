@@ -170,7 +170,7 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 					removeFromSpecialBand(channelHoppingSequence[i]); //if there is PU
 				}
 			}
-			std::uniform_int_distribution<int> distr(1, radiosWithEmptyBand.size());
+			//std::uniform_int_distribution<int> distr(1, radiosWithEmptyBand.size());
 			for (radioThatSendPacket; radioThatSendPacket < Tx.numberOfRadio; radioThatSendPacket++)
 			{
 				if (std::find(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), radioThatSendPacket) != radiosWithEmptyBand.end())
