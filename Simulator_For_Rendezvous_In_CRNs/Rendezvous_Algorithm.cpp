@@ -12,6 +12,7 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std
 	specialBandSendingTimes = 0;
 	state = false;
 	didntFinishWholeBound = true;
+	radioThatSendPacket = 0;
 	p = 5;
 	distance = 2 * Tx.numberOfRadio;
 	std::cout << "distance for TX ID " << ID << " = " << distance << " initial Band =  "<< initialBand << std::endl;
@@ -58,7 +59,7 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std
 	std::cout << "..................................................................................." << std::endl;
 }
 Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Receiver & RX, std::vector<Band_Details>& Bands, int ID)
-	:twoTimeSlotPassed(RX.numberOfRadio, false)
+	:twoTimeSlotPassed(RX.numberOfRadio, false), numberOfStayCounter(RX.numberOfRadio, 0), randomStay(RX.numberOfRadio, 0)
 {
 	firstRendezvous = false;
 	std::cout << "..................................................................................." << std::endl;
@@ -153,7 +154,7 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 		{
 			for (int i = 0; i < Tx.numberOfRadio; i++)
 			{
-				if(specialBands.size() < Tx.numberOfRadio)
+				if (specialBands.size() < Tx.numberOfRadio && specialBands.size() > 0)
 				channelHoppingSequence[i] = specialBands[i];
 				if (Tx.scanningBands(Bands, channelHoppingSequence[i]))
 				{

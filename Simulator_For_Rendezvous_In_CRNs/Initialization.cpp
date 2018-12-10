@@ -57,6 +57,7 @@ void Initialization::Initialize()
 				Bands[i].setState((double(rand()) / double(RAND_MAX)) >= PUProbON);
 			else
 				Bands[i].setState((double(rand()) / double(RAND_MAX)) <= PUProbON);
+
 			for (int j = 0; j < numberOfSUs / 2; j++)
 			{
 				if (!successfulRendezvousVsSU[j] && std::find(Bands[i].packetVsID.begin(), Bands[i].packetVsID.end(), j) != Bands[i].packetVsID.end())
@@ -84,9 +85,9 @@ void Initialization::Initialize()
 			if (!Bands[BandsOccupiedBySUs[i]].isEmpty())
 				successfulRendezvousVsSU[i] = false;
 		}
-		std::cout << std::endl << "////////////////////////////////////////////////////////////////" << timeSlot << std::endl;
+		std::cout << std::endl << "////////////////////////////////////////////////////////////////" << T << std::endl;
 	}
-	std::cout << "Successful Randezvous in : " << timeSlot << " Time slots" << std::endl;
+	std::cout << "Done : " << timeSlot << " Time slots" << std::endl;
 
 }
 
