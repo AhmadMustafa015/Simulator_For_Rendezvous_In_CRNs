@@ -33,6 +33,7 @@ private:
 	int returnMaxValueInVector(const std::vector<int> &V) const;
 	std::vector<int> specialBands;
 	std::vector<int> iterative;
+
 	void setSpecialBands(int B);
 	void removeFromSpecialBand(int B);
 	int RandomStayConst;
