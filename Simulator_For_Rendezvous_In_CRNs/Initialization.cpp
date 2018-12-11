@@ -49,7 +49,7 @@ void Initialization::Initialize()
 		successfulRendezvousVsSU[i] = channelHoppingRX[i].firstRendezvous;
 		channelHoppingRX[i].firstRendezvous = false;
 	}
-	for (int T = 0; T < timeSlot; T++)
+	for (int T = 1; T < timeSlot; T++)
 	{
 		for (int i = 0; i < Bands.size(); i++)
 		{
