@@ -6,7 +6,7 @@ std::default_random_engine generator(1);
 SecondaryUser::SecondaryUser()
 {
 	//NumberOfBand = 100;
-	std::uniform_int_distribution<int> distr(1,1);
+	std::uniform_int_distribution<int> distr(3,3);
 	numberOfRadio = distr(generator);
 }
 bool SecondaryUser::scanningBands(const std::vector<Band_Details> &Bands, int bandNumber)
@@ -38,6 +38,8 @@ bool Receiver::listening(Band_Details &band, int ID)
 	if (band.packetVsID.size() == 1 && band.packetVsID[0] == ID)
 	{
 		//std::cout << std::endl <<"rendezvous" << ID;
+		numberOfRendezvous++;
+		std::cout << "***********************************      " << numberOfRendezvous << "          ***************************************" << std::endl;
 		return true;
 	}
 	else
