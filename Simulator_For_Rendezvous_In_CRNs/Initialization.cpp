@@ -60,7 +60,7 @@ void Initialization::Initialize()
 
 	for (int T = 1; T < timeSlot; T++)
 	{
-		if (T == 229)
+		if (T == 162)
 			std::cout << "103";
 		for (int i = 0; i < Bands.size(); i++)
 		{

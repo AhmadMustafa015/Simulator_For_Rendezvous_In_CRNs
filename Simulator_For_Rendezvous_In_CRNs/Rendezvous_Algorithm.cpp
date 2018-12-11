@@ -701,8 +701,13 @@ void Rendezvous_Algorithm::setSpecialBands(int B)
 	}
 }
 void Rendezvous_Algorithm::removeFromSpecialBand(int B)
-{
-	std::vector<int>::iterator itt(std::find(specialBands.begin(), specialBands.end(), B));
-	specialBands.erase(itt);
-	iterative.erase(itt);
+{	
+	for (int i = 0; i < specialBands.size(); i++)
+	{
+		if (std::find(specialBands.begin(), specialBands.end(), B) != specialBands.end())
+		{
+			specialBands.erase(specialBands.begin() + i);
+			iterative.erase(iterative.begin() + i);
+		}
+	}
 }
