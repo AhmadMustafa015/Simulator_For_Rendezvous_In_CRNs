@@ -34,5 +34,6 @@ class Receiver :public SecondaryUser
 public:
 	Receiver() {};
 	bool listening(Band_Details &band, int ID);
+	int numberOfRendezvous = 0;
 };
 

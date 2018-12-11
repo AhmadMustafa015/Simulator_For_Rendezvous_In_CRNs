@@ -13,6 +13,7 @@ Initialization::Initialization(int numOfBands, int numOfSUs, double PUProb, int 
 	Bands.reserve(numberOfBands);
 	rendezvous = false;
 	timeSlot = timeSlots;
+	numberOfrandezvous = 0;
 }
 
 void Initialization::Initialize()
@@ -47,10 +48,20 @@ void Initialization::Initialize()
 	for (int i = 0; i < numberOfSUs / 2; i++)
 	{
 		successfulRendezvousVsSU[i] = channelHoppingRX[i].firstRendezvous;
+		if (channelHoppingRX[i].firstRendezvous)
+			avgTimeToRendezvous.push_back(1);
+		else
+		{
+			avgTimeToRendezvous.push_back(0);
+		}
 		channelHoppingRX[i].firstRendezvous = false;
+		sst.push_back(successfulRendezvousVsSU[i]);
 	}
+
 	for (int T = 1; T < timeSlot; T++)
 	{
+		if (T == 229)
+			std::cout << "103";
 		for (int i = 0; i < Bands.size(); i++)
 		{
 			if (Bands[i].isEmpty())
@@ -98,10 +109,31 @@ void Initialization::Initialize()
 				successfulRendezvousVsSU[i] = channelHoppingRX[i].firstRendezvous;
 				channelHoppingRX[i].firstRendezvous = false;
 			}
+			if (sst[i] != successfulRendezvousVsSU[i])
+			{
+				sst[i] = successfulRendezvousVsSU[i];
+				if(successfulRendezvousVsSU[i])
+					avgTimeToRendezvous.push_back(T);
+				else
+				{
+					avgTimeToRendezvous.push_back(0);
+				}
+			}
 		}
 		std::cout << std::endl << "////////////////////////////////////////////////////////////////" << T << std::endl;
 	}
-	std::cout << "Done : " << timeSlot << " Time slots" << std::endl;
+
+	for (int i = 0; i < numberOfSUs / 2; i++)
+	{
+		numberOfrandezvous += Rx[i].numberOfRendezvous;
+	}
+	std::cout << "***********************************      " << numberOfrandezvous << "          ***************************************" << std::endl;
+	avgT = 0;
+	for (int i = 0; i < avgTimeToRendezvous.size(); i++)
+		avgT += avgTimeToRendezvous[i];
+	avgT = avgT / avgTimeToRendezvous.size();
+	std::cout << "***********************************      " << avgT <<"  " << avgTimeToRendezvous.size() << "          ***************************************" << std::endl;
+
 
 }
 
