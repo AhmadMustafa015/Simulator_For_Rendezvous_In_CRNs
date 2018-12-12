@@ -86,16 +86,11 @@ void Initialization::Initialize()
 		for (int i = 0; i < numberOfSUs / 2; i++)
 			if (!successfulRendezvousVsSU[i])
 				successfulRendezvousVsSU[i] = channelHoppingRX[i].ourAlgorithmRx(Rx[i].allocatedBand, Rx[i], Bands, i, T);
-			//counter += successfulRendezvousVsSU[i];
-		
-		//rendezvous = (numberOfSUs / 2) == (counter);
+		std::cout << "Rendezvous status: ";
 		for (int i = 0; i < successfulRendezvousVsSU.size(); i++)
 			std::cout << successfulRendezvousVsSU[i] << " ";
-		/*for (int i = 0; i < BandsOccupiedBySUs.size(); i++)
-		{
-			if (!Bands[BandsOccupiedBySUs[i]].isEmpty())
-				successfulRendezvousVsSU[i] = false;
-		}*/
+		std::cout << std::endl;
+
 		for (int i = 0; i < numberOfSUs / 2; i++)
 		{
 			if (successfulRendezvousVsSU[i] && !Bands[Rx[i].allocatedBand].isEmpty())
