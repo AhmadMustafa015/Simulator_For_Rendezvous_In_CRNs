@@ -3,6 +3,9 @@
 #include "Band_Details.h"
 #include "SecondaryUser.h"
 #include "Rendezvous_Algorithm.h"
+#include <fstream>
+#include <algorithm>
+#include <string>
 class Initialization
 {
 public:
@@ -43,5 +46,6 @@ private:
 	std::vector<int> avgTimeToRendezvous;
 	std::vector<bool> sst;
 	double avgT;
+	std::vector<std::vector<int>> avgTToRPerSUs;
 };
 
