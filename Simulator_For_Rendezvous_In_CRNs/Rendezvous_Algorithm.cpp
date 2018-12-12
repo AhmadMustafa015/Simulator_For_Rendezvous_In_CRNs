@@ -16,7 +16,7 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std
 	radioThatSendPacket = 0;
 	p = 5;
 	distance = 2 * Tx.numberOfRadio;
-	std::cout << "distance for TX ID " << ID << " = " << distance << " initial Band =  "<< initialBand << std::endl;
+	std::cout << "Distance for TX ID " << ID << " = " << distance << ", initial band =  "<< initialBand << std::endl;
 	upperBound1 = (initialBand + distance / 2) % Bands.size();
 	lowerBound1 = (initialBand + 1) % Bands.size();
 	upperBound2 = (initialBand - 1) % Bands.size();
@@ -29,7 +29,7 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std
 		channelSequence[b - lowerBound2] = b % Bands.size();
 		channelSequence[Tx.numberOfRadio + (b - lowerBound2)] = (lowerBound1 + (b - lowerBound2)) % Bands.size();
 	}
-	std::cout << "channel sequence : ";
+	std::cout << "Channel sequence : ";
 	for(int i = 0; i < channelSequence.size();i++)
 		std::cout << channelSequence[i] << " ";
 	std::cout << std::endl;
@@ -39,11 +39,11 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std
 		if (Tx.scanningBands(Bands, channelHoppingSequence[i]))
 			radiosWithEmptyBand.push_back(i);
 	}
-	std::cout << "channel Hopping sequence : ";
+	std::cout << "Channel hopping sequence : ";
 	for (int i = 0; i < channelHoppingSequence.size(); i++)
 		std::cout << channelHoppingSequence[i] << " ";
 	std::cout << std::endl;
-	std::cout << std::endl << "radio with empty band : ";
+	std::cout << std::endl << "Radios with empty band : ";
 	for (int i = 0; i < radiosWithEmptyBand.size(); i++)
 		std::cout << radiosWithEmptyBand[i] << " ";
 	std::cout << std::endl;
@@ -56,16 +56,17 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std
 			Tx.sendPacket(Bands[channelHoppingSequence[radioSendPacket]], ID, radiosWithEmptyBand[radioSendPacket]);
 		}
 	}
-	std::cout << "radio send Packet = " << radioSendPacket << std::endl;
+	std::cout << "Radio " << radioThatSendPacket << " sends a packet on band " << channelHoppingSequence[radioThatSendPacket] << std::endl;
 	std::cout << "..................................................................................." << std::endl;
 }
+
 Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Receiver & RX, std::vector<Band_Details>& Bands, int ID)
 	:twoTimeSlotPassed(RX.numberOfRadio, false), numberOfStayCounter(RX.numberOfRadio, 0), randomStay(RX.numberOfRadio, 0)
 {
 	firstRendezvous = false;
 	std::cout << "..................................................................................." << std::endl;
 	distance = 2 * RX.numberOfRadio;
-	std::cout << "distance for RX ID " << ID << " = " << distance << " initial Band =  " << initialBand << std::endl;
+	std::cout << "Distance for RX ID " << ID << " = " << distance << ", initial band =  " << initialBand << std::endl;
 	upperBound1 = (initialBand + distance / 2) % Bands.size();
 	lowerBound1 = (initialBand + 1) % Bands.size();
 	upperBound2 = (initialBand - 1) % Bands.size();
@@ -90,14 +91,14 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Receiver & RX, std::
 		firstRendezvous =  RX.listening(Bands[channelHoppingSequence[i]], ID) + firstRendezvous;
 		twoTimeSlotPassed[i] = true;
 	}
-	std::cout << "channel sequence : "  ;
+	std::cout << "Channel sequence : "  ;
 	for (int i = 0; i < channelSequence.size(); i++)
 		std::cout << channelSequence[i] << " ";
 	std::cout << std::endl;
-	std::cout << "channel Hopping  sequence : " ;
+	std::cout << "Channel hopping  sequence : " ;
 	for (int i = 0; i < channelHoppingSequence.size(); i++)
 		std::cout << channelHoppingSequence[i] << " ";
-	std::cout << std::endl << "radio with empty band : ";
+	std::cout << std::endl << "Radios with empty band : ";
 	for (int i = 0; i < radiosWithEmptyBand.size(); i++)
 		std::cout << radiosWithEmptyBand[i] << " ";
 	std::cout << std::endl;
@@ -153,7 +154,7 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 					radioSendPacket = distr(generator5) - 1;
 					Tx.sendPacket(Bands[channelHoppingSequence[radiosWithEmptyBand[radioSendPacket]]], ID, radiosWithEmptyBand[radioSendPacket]);
 				}
-				std::cout << "radio send Packet = " << radioSendPacket << std::endl;
+				std::cout << "Radio " << radioThatSendPacket << " sends a packet on band " << channelHoppingSequence[radioThatSendPacket] << std::endl;
 			}
 		}
 		else
@@ -183,7 +184,7 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 					std::uniform_int_distribution<int> distr(1, radiosWithEmptyBand.size());
 					Tx.sendPacket(Bands[channelHoppingSequence[radioThatSendPacket]], ID, radioThatSendPacket);
 					specialBandSendingTimes++;
-					std::cout << "radio send Packet = " << radioThatSendPacket << std::endl;
+					std::cout << "Radio " << radioThatSendPacket << " sends a packet on band " << channelHoppingSequence[radioThatSendPacket] << std::endl;
 					break;
 				}
 			}
@@ -199,11 +200,11 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 				logical2 = false;
 			}
 		}
-		std::cout << "channel sequence : ";
+		std::cout << "Channel sequence : ";
 		for (int i = 0; i < channelSequence.size(); i++)
 			std::cout << channelSequence[i] << " ";
 		std::cout << std::endl;
-		std::cout << "channel Hopping sequence : ";
+		std::cout << "Channel hopping sequence : ";
 		for (int i = 0; i < channelHoppingSequence.size(); i++)
 			std::cout << channelHoppingSequence[i] << " ";
 		std::cout << std::endl;
@@ -283,11 +284,11 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 			}
 
 		}
-		std::cout << "Radio With empty Band : ";
+		std::cout << "Radios with empty band : ";
 		for (int i = 0; i < radiosWithEmptyBand.size(); i++)
 			std::cout << radiosWithEmptyBand[i] << " ";
 		std::cout << std::endl;
-		std::cout << "channel hopping sequence : ";
+		std::cout << "Channel hopping sequence : ";
 		for (int i = 0; i < channelHoppingSequence.size(); i++)
 			std::cout << channelHoppingSequence[i] << " ";
 		std::cout << std::endl;
@@ -299,7 +300,7 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 				radioSendPacket = distr(generator5) - 1;
 				Tx.sendPacket(Bands[channelHoppingSequence[radiosWithEmptyBand[radioSendPacket]]], ID, radiosWithEmptyBand[radioSendPacket]);
 			}
-			std::cout << "radio send Packet = " << radioSendPacket << std::endl;
+			std::cout << "Radio " << radioThatSendPacket << " sends a packet on band " << channelHoppingSequence[radioThatSendPacket] << std::endl;
 		}
 	}
 	

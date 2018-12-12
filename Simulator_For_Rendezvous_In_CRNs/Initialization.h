@@ -42,7 +42,7 @@ private:
 	std::vector<int> BandsOccupiedBySUs;
 	int counter;
 	std::vector<bool> successfulRendezvousVsSU;
-	int numberOfrandezvous;
+	int numberOfRendezvous;
 	std::vector<int> avgTimeToRendezvous;
 	std::vector<bool> sst;
 	double avgT;
