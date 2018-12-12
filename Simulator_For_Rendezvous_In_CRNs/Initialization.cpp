@@ -3,7 +3,7 @@
 std::default_random_engine generator0(1);
 //std::mt19937 generator0(rand_dev0());
 Initialization::Initialization(int numOfBands, int numOfSUs, double PUProb, int timeSlots)
-	:Tx(numOfSUs / 2), Bands(numOfBands), Rx(numOfSUs / 2)
+	:Tx(numOfSUs / 2), Bands(numOfBands), Rx(numOfSUs / 2),avgTToRPerSUs(numOfSUs / 2)
 	, channelHoppingRX(numOfSUs / 2), channelHoppingTX(numOfSUs / 2)
 	, successfulRendezvousVsSU(numOfSUs / 2, false)
 {
@@ -52,7 +52,7 @@ void Initialization::Initialize()
 			avgTimeToRendezvous.push_back(1);
 		else
 		{
-			avgTimeToRendezvous.push_back(0);
+			avgTimeToRendezvous.push_back(-1);
 		}
 		channelHoppingRX[i].firstRendezvous = false;
 		sst.push_back(successfulRendezvousVsSU[i]);
@@ -60,7 +60,7 @@ void Initialization::Initialize()
 
 	for (int T = 1; T < timeSlot; T++)
 	{
-		if (T == 162)
+		if (T ==12)
 			std::cout << "103";
 		for (int i = 0; i < Bands.size(); i++)
 		{
@@ -97,23 +97,34 @@ void Initialization::Initialize()
 			{
 				std::cout << "PU come in band number " << Rx[i].allocatedBand << " " << std::endl;
 				successfulRendezvousVsSU[i] = false;
+				Bands[Rx[i].allocatedBand].clearPacket();
 				RendezvousTxIterator = channelHoppingTX.begin() + i;
 				*RendezvousTxIterator = Rendezvous_Algorithm(Rx[i].allocatedBand, Tx[i], Bands, i);
 				RendezvousRxIterator = channelHoppingRX.begin() + i;
 				*RendezvousRxIterator = Rendezvous_Algorithm(Rx[i].allocatedBand, Rx[i], Bands, i);
 				successfulRendezvousVsSU[i] = channelHoppingRX[i].firstRendezvous;
-				channelHoppingRX[i].firstRendezvous = false;
 			}
-			if (sst[i] != successfulRendezvousVsSU[i])
+			if (channelHoppingRX[i].firstRendezvous)
+				avgTimeToRendezvous.push_back(1);
+			else
 			{
-				sst[i] = successfulRendezvousVsSU[i];
-				if(successfulRendezvousVsSU[i])
-					avgTimeToRendezvous.push_back(T);
+				if (sst[i] != successfulRendezvousVsSU[i])
+				{
+					sst[i] = successfulRendezvousVsSU[i];
+					if (successfulRendezvousVsSU[i])
+						avgTimeToRendezvous.push_back(T);
+					else if ((avgTimeToRendezvous.size() - numberOfSUs / 2) > 0 && avgTimeToRendezvous[avgTimeToRendezvous.size() - numberOfSUs / 2] >= 0)
+					{
+						avgTimeToRendezvous.push_back(-T);
+					}
+
+				}
 				else
 				{
 					avgTimeToRendezvous.push_back(0);
 				}
 			}
+			channelHoppingRX[i].firstRendezvous = false;
 		}
 		std::cout << std::endl << "////////////////////////////////////////////////////////////////" << T << std::endl;
 	}
@@ -128,7 +139,24 @@ void Initialization::Initialize()
 		avgT += avgTimeToRendezvous[i];
 	avgT = avgT / avgTimeToRendezvous.size();
 	std::cout << "***********************************      " << avgT <<"  " << avgTimeToRendezvous.size() << "          ***************************************" << std::endl;
-
+	std::vector<int> numOfRProcess(numberOfSUs/2 , 0);
+	for (int i = 0; i < numberOfSUs / 2; i++)
+	{
+		for (int k = 0; k < avgTimeToRendezvous.size() / (numberOfSUs / 2); k++)
+		{
+			avgTToRPerSUs[i].push_back(avgTimeToRendezvous[i + 5 * k]);
+			if (avgTimeToRendezvous[i + 5 * k] < 0)
+				numOfRProcess[i]++;
+			if (avgTimeToRendezvous[i + 5 * k] == 1)
+				numOfRProcess[i]++;
+		}
+		avgTToRPerSUs[i].push_back(numOfRProcess[i]);
+		std::ofstream outputFile;
+		outputFile.open("Time to rendezvous for SU ID(" + std::to_string(i) + ").csv");
+		std::ostream_iterator<int> outputIterator(outputFile, "\n");
+		std::copy(avgTToRPerSUs[i].begin(), avgTToRPerSUs[i].end(), outputIterator);
+		outputFile.close();
+	}
 
 }
 
