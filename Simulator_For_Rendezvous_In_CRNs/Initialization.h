@@ -6,6 +6,7 @@
 #include <fstream>
 #include <algorithm>
 #include <string>
+#include <numeric>
 class Initialization
 {
 public:

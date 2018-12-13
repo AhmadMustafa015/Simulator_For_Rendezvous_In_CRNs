@@ -138,8 +138,8 @@ void Initialization::Initialize()
 	for (int i = 0; i < avgTimeToRendezvous.size(); i++)
 		avgT += avgTimeToRendezvous[i];
 	avgT = avgT / avgTimeToRendezvous.size();
-	std::cout << "***********************************      " << avgT <<"  " << avgTimeToRendezvous.size() << "          ***************************************" << std::endl;
 	std::vector<int> numOfRProcess(numberOfSUs/2 , 0);
+	int summ;
 	for (int i = 0; i < numberOfSUs / 2; i++)
 	{
 		for (int k = 0; k < avgTimeToRendezvous.size() / (numberOfSUs / 2); k++)
@@ -156,8 +156,12 @@ void Initialization::Initialize()
 		std::ostream_iterator<int> outputIterator(outputFile, "\n");
 		std::copy(avgTToRPerSUs[i].begin(), avgTToRPerSUs[i].end(), outputIterator);
 		outputFile.close();
+		summ = std::accumulate(avgTToRPerSUs[i].begin(), avgTToRPerSUs[i].end(), 0);
+		std::cout << "***********************************   For SU : " << i << "  " << double(summ/numOfRProcess[i])<< "          ***************************************" << std::endl;
 	}
-
+	for (int i = 0; i < numberOfSUs / 2; i++)
+		std::cout << successfulRendezvousVsSU[i] << "    ";
+	
 }
 
 
