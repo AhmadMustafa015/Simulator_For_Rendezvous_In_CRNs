@@ -3,7 +3,7 @@
 std::default_random_engine generator0(1);
 //std::mt19937 generator0(rand_dev0());
 Initialization::Initialization(int numOfBands, int numOfSUs, double PUProb, int timeSlots)
-	:Tx(numOfSUs / 2), Bands(numOfBands), Rx(numOfSUs / 2),avgTToRPerSUs(numOfSUs / 2)
+	:Tx(numOfSUs / 2), Bands(numOfBands), Rx(numOfSUs / 2), avgTToRPerSUs(numOfSUs / 2)
 	, channelHoppingRX(numOfSUs / 2), channelHoppingTX(numOfSUs / 2)
 	, successfulRendezvousVsSU(numOfSUs / 2, false)
 {
@@ -13,7 +13,7 @@ Initialization::Initialization(int numOfBands, int numOfSUs, double PUProb, int 
 	Bands.reserve(numberOfBands);
 	rendezvous = false;
 	timeSlot = timeSlots;
-	numberOfrandezvous = 0;
+	numberOfRendezvous = 0;
 }
 
 void Initialization::Initialize()
@@ -25,9 +25,8 @@ void Initialization::Initialize()
 		if (Bands[counter].isEmpty())
 			std::cout << counter << " ";
 		counter++;
-
 	}
-	std::cout << std::endl;
+	std::cout << std::endl << "----------------------------------------" << std::endl;
 	/*for (SUsConstruct = SUs.begin(); SUsConstruct != SUs.end(); SUsConstruct++)
 	{
 		SUsConstruct->scanningBands(Bands);
@@ -131,9 +130,9 @@ void Initialization::Initialize()
 
 	for (int i = 0; i < numberOfSUs / 2; i++)
 	{
-		numberOfrandezvous += Rx[i].numberOfRendezvous;
+		numberOfRendezvous += Rx[i].numberOfRendezvous;
 	}
-	std::cout << "***********************************      " << numberOfrandezvous << "          ***************************************" << std::endl;
+	std::cout << "***********************************      " << numberOfRendezvous << "          ***************************************" << std::endl;
 	avgT = 0;
 	for (int i = 0; i < avgTimeToRendezvous.size(); i++)
 		avgT += avgTimeToRendezvous[i];

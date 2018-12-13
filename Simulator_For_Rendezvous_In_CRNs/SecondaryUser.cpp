@@ -28,7 +28,7 @@ void SecondaryUser::emptyAllResult() {
 }
 
 
-void Transmitter::sendPacket(Band_Details &band,int ID, int radioNumber)
+void Transmitter::sendPacket(Band_Details &band, int ID, int radioNumber)
 {
 	band.packetVsID.push_back(ID);
 }
