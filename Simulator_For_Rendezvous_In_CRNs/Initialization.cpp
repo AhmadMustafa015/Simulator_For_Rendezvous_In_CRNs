@@ -44,6 +44,7 @@ void Initialization::Initialize()
 		*RendezvousRxIterator = Rendezvous_Algorithm(Rx[counter].allocatedBand, Rx[counter], Bands, counter);
 		counter++;
 	}
+	std::cout << "Rendezvous status: ";
 	for (int i = 0; i < numberOfSUs / 2; i++)
 	{
 		successfulRendezvousVsSU[i] = channelHoppingRX[i].firstRendezvous;
@@ -55,18 +56,20 @@ void Initialization::Initialize()
 		}
 		channelHoppingRX[i].firstRendezvous = false;
 		sst.push_back(successfulRendezvousVsSU[i]);
+		std::cout << successfulRendezvousVsSU[i] << " ";
 	}
-
+	std::cout << std::endl << "//////////////////////  Time slot number ///////////////////////////// (" << 0 <<")" << std::endl;
+	double probTest = 0;
 	for (int T = 1; T < timeSlot; T++)
 	{
-		if (T ==12)
+		if (T ==98)
 			std::cout << "103";
 		for (int i = 0; i < Bands.size(); i++)
 		{
 			if (Bands[i].isEmpty())
-				Bands[i].setState((double(rand()) / double(RAND_MAX)) >= PUProbON);
+				Bands[i].setState((double(rand()) / double(RAND_MAX)) >= 0.05); // PUProbON);
 			else
-				Bands[i].setState((double(rand()) / double(RAND_MAX)) <= PUProbON);
+				Bands[i].setState((double(rand()) / double(RAND_MAX)) <= 0.05); // PUProbON);
 
 			for (int j = 0; j < numberOfSUs / 2; j++)
 			{
@@ -78,13 +81,15 @@ void Initialization::Initialize()
 				}
 			}
 		}
+		if (!Bands[10].isEmpty())
+			probTest++;
 	//	counter = 0;
 		for (int i = 0; i < numberOfSUs / 2; i++)
 			if (!successfulRendezvousVsSU[i])
 				channelHoppingTX[i].ourAlgorithmTx(Tx[i].allocatedBand, Tx[i], Bands, i, T);
 		for (int i = 0; i < numberOfSUs / 2; i++)
 			if (!successfulRendezvousVsSU[i])
-				successfulRendezvousVsSU[i] = channelHoppingRX[i].ourAlgorithmRx(Rx[i].allocatedBand, Rx[i], Bands, i, T);
+				successfulRendezvousVsSU[i] = channelHoppingRX[i].ourAlgorithmRx(Rx[i].allocatedBand, Rx[i], Bands, i, T , channelHoppingTX);
 		std::cout << "Rendezvous status: ";
 		for (int i = 0; i < successfulRendezvousVsSU.size(); i++)
 			std::cout << successfulRendezvousVsSU[i] << " ";
@@ -125,7 +130,7 @@ void Initialization::Initialize()
 			}
 			channelHoppingRX[i].firstRendezvous = false;
 		}
-		std::cout << std::endl << "////////////////////////////////////////////////////////////////" << T << std::endl;
+		std::cout << std::endl << "//////////////////////  Time slot number ///////////////////////////// (" << T << ")" << std::endl;
 	}
 
 	for (int i = 0; i < numberOfSUs / 2; i++)
@@ -143,7 +148,7 @@ void Initialization::Initialize()
 	{
 		for (int k = 0; k < avgTimeToRendezvous.size() / (numberOfSUs / 2); k++)
 		{
-			avgTToRPerSUs[i].push_back(avgTimeToRendezvous[i + 5 * k]);
+			avgTToRPerSUs[i].push_back(avgTimeToRendezvous[i + (numberOfSUs/2) * k]);
 			if (avgTimeToRendezvous[i + 5 * k] < 0)
 				numOfRProcess[i]++;
 			if (avgTimeToRendezvous[i + 5 * k] == 1)
@@ -160,7 +165,7 @@ void Initialization::Initialize()
 	}
 	for (int i = 0; i < numberOfSUs / 2; i++)
 		std::cout << successfulRendezvousVsSU[i] << "    ";
-	
+	std::cout << probTest / 100.0;
 }
 
 

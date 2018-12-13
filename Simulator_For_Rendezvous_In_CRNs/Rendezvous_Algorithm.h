@@ -12,12 +12,15 @@ public:
 	Rendezvous_Algorithm(int initialBand, Receiver &Rx, std::vector<Band_Details> &Bands, int ID);
 	~Rendezvous_Algorithm() {};
 	void ourAlgorithmTx(int initialBand,Transmitter &SUs, std::vector<Band_Details> &Bands,int Id,int timeSlot);
-	bool ourAlgorithmRx(int initialBand,Receiver &SUs, std::vector<Band_Details> &Bands,int Id, int timeSlot);
+	bool ourAlgorithmRx(int initialBand,Receiver &SUs, std::vector<Band_Details> &Bands,int Id, int timeSlot , std::vector<Rendezvous_Algorithm> &TXs);
 	std::vector<int> channelHoppingSequence;
 	bool firstRendezvous;
+	std::vector<int> randomStay;
+	std::vector<int> numberOfStayCounter;
+	int distance;
+
 private:
 	//our algorithm 
-	int distance;
 	int upperBound1;
 	int upperBound2;
 	int lowerBound1;
@@ -27,9 +30,7 @@ private:
 	std::vector<int> radiosWithEmptyBand;
 	std::vector<int> channelSequence;
 	std::vector<bool> twoTimeSlotPassed;
-	std::vector<int> randomStay;
 	int p;
-	std::vector<int> numberOfStayCounter;
 	int returnMaxValueInVector(const std::vector<int> &V) const;
 	std::vector<int> specialBands;
 	std::vector<int> iterative;

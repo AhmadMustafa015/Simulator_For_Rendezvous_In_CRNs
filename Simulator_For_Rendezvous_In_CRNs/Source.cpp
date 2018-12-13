@@ -1,8 +1,8 @@
 #include "Initialization.h"
 int main()
 {
-	//initializaion start(number of band , number of SUs , Probability of PU on) 
-	Initialization Start(100, 30, 0.2, 100);
+	//initializaion start(number of band , number of SUs , Probability of PU on, TIME SLOT) 
+	Initialization Start(100, 40, 0.6, 110);
 	Start.Initialize();
 	system("pause");
 }
