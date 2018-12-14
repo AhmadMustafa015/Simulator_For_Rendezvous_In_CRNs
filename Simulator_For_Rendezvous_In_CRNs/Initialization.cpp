@@ -5,7 +5,7 @@ std::default_random_engine generator0(1);
 Initialization::Initialization(int numOfBands, int numOfSUs, double PUProb, int timeSlots)
 	:Tx(numOfSUs / 2), Bands(numOfBands), Rx(numOfSUs / 2), avgTToRPerSUs(numOfSUs / 2)
 	, channelHoppingRX(numOfSUs / 2), channelHoppingTX(numOfSUs / 2)
-	, successfulRendezvousVsSU(numOfSUs / 2, false)
+	, successfulRendezvousVsSU(numOfSUs / 2, false),MTTRPerUser(numOfSUs/1)
 {
 	numberOfBands = numOfBands;
 	numberOfSUs = numOfSUs;
@@ -18,6 +18,8 @@ Initialization::Initialization(int numOfBands, int numOfSUs, double PUProb, int 
 
 void Initialization::Initialize()
 {
+	std::cout.setstate(std::ios_base::failbit);
+	
 	counter = 0;
 	for (bandConstruct = Bands.begin(); bandConstruct != Bands.end(); bandConstruct++)
 	{
@@ -62,7 +64,7 @@ void Initialization::Initialize()
 	double probTest = 0;
 	for (int T = 1; T < timeSlot; T++)
 	{
-		if (T ==98)
+		if (T ==999)
 			std::cout << "103";
 		for (int i = 0; i < Bands.size(); i++)
 		{
@@ -144,6 +146,7 @@ void Initialization::Initialize()
 	avgT = avgT / avgTimeToRendezvous.size();
 	std::vector<int> numOfRProcess(numberOfSUs/2 , 0);
 	int summ;
+	std::cout.clear();
 	for (int i = 0; i < numberOfSUs / 2; i++)
 	{
 		for (int k = 0; k < avgTimeToRendezvous.size() / (numberOfSUs / 2); k++)
@@ -162,7 +165,26 @@ void Initialization::Initialize()
 		outputFile.close();
 		summ = std::accumulate(avgTToRPerSUs[i].begin(), avgTToRPerSUs[i].end(), 0);
 		std::cout << "***********************************   For SU : " << i << "  " << double(summ/numOfRProcess[i])<< "          ***************************************" << std::endl;
+		int tempr = 0;
+		for(auto &t : avgTToRPerSUs[i])
+		{
+			if (t == avgTToRPerSUs[i].back())
+				break;
+			if (t < 0)
+				tempr =t;
+			if (t > 1)
+			{
+				tempr += t;
+				MTTRPerUser[i].push_back(tempr);
+			}
+		}
+		MTTRVsSU.push_back(maxValue(MTTRPerUser[i]));
 	}
+	std::ofstream outputFile;
+	outputFile.open("Maximum Time to rendezvous for Vs SU.csv");
+	std::ostream_iterator<int> outputIterator(outputFile, "\n");
+	std::copy(MTTRVsSU.begin(), MTTRVsSU.end(), outputIterator);
+	outputFile.close();
 	for (int i = 0; i < numberOfSUs / 2; i++)
 		std::cout << successfulRendezvousVsSU[i] << "    ";
 	std::cout << probTest / 20000.0;
@@ -194,6 +216,17 @@ void Initialization::intitialTransmittingAndReceiving(std::vector<Transmitter> &
 		//arrivalBand = SUs[0].allocatedBand;
 		connected = false;
 	}
+}
+
+int Initialization::maxValue(const std::vector<int>& V)
+{
+	int max = 0;
+	for (auto &t : V)
+	{
+		if (t > max)
+			max = t;
+	}
+	return max;
 }
 
 void Initialization::PUArrival(int arrivalBand, std::vector<Band_Details> &Bands, bool State)
