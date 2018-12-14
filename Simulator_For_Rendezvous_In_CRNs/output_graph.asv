@@ -1,0 +1,49 @@
+%MTTR
+MTTRPU2 = csvread('Maximum Time to rendezvous for Vs SU_PUprob(.2).csv');
+MTTRPU4 = csvread('Maximum Time to rendezvous for Vs SU_PUprob(.4).csv');
+MTTRPU6 = csvread('Maximum Time to rendezvous for Vs SU_PUprob(.6).csv');
+
+X1 = MTTRPU2(:,1);
+X2 = MTTRPU4(:,1);
+X3 = MTTRPU6(:,1);
+
+figure(1);
+hold on ;
+          
+ plot(X1,'b-o');
+ plot(X2,'r--*');
+ plot(X3,'g--^');
+ title('MTTR Vs User For differant PU activation probability');
+ xlabel('SU
+ grid on;
+ 
+MTTRR2 = csvread('Maximum Time to rendezvous for Vs SU_radio(1-5).csv');
+MTTRR4 = csvread('Maximum Time to rendezvous for Vs SU_radio(2-4).csv');
+MTTRR6 = csvread('Maximum Time to rendezvous for Vs SU_radio(3-3).csv');
+X1 = MTTRR2(:,1);
+X2 = MTTRR4(:,1);
+X3 = MTTRR6(:,1);
+
+figure(2);
+hold on ;
+          
+ plot(X1,'b-o');
+ plot(X2,'r--*');
+ plot(X3,'g--^');
+ grid on;
+ 
+ MTTRR22 = csvread('Maximum Time to rendezvous for Vs SU_radio(1-1).csv');
+MTTRR44 = csvread('Maximum Time to rendezvous for Vs SU_radio(2-2).csv');
+MTTRR66 = csvread('Maximum Time to rendezvous for Vs SU_radio(4-4).csv');
+X1 = MTTRR22(:,1);
+X2 = MTTRR44(:,1);
+X3 = MTTRR66(:,1);
+
+figure(3);
+hold on ;
+          
+ plot(X1,'b-o');
+ plot(X2,'r--*');
+ plot(X3,'g--^');
+ grid on;
+ 

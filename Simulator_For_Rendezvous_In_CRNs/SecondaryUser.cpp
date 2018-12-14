@@ -6,7 +6,7 @@ std::default_random_engine generator(1);
 SecondaryUser::SecondaryUser()
 {
 	//NumberOfBand = 100;
-	std::uniform_int_distribution<int> distr(1,5);
+	std::uniform_int_distribution<int> distr(4,4);
 	numberOfRadio = distr(generator);
 }
 bool SecondaryUser::scanningBands(const std::vector<Band_Details> &Bands, int bandNumber)
