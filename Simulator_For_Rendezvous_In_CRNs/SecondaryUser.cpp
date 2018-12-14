@@ -6,8 +6,7 @@ std::default_random_engine generator(1);
 SecondaryUser::SecondaryUser()
 {
 	//NumberOfBand = 100;
-	std::uniform_int_distribution<int> distr(1,5);
-	numberOfRadio = distr(generator);
+	
 }
 bool SecondaryUser::scanningBands(const std::vector<Band_Details> &Bands, int bandNumber)
 {
@@ -28,9 +27,21 @@ void SecondaryUser::emptyAllResult() {
 }
 
 
+Transmitter::Transmitter()
+{
+	std::uniform_int_distribution<int> distr(1, 1);
+	numberOfRadio = distr(generator);
+}
+
 void Transmitter::sendPacket(Band_Details &band, int ID, int radioNumber)
 {
 	band.packetVsID.push_back(ID);
+}
+
+Receiver::Receiver()
+{
+	std::uniform_int_distribution<int> distr(2, 2);
+	numberOfRadio = distr(generator);
 }
 
 bool Receiver::listening(Band_Details &band, int ID)

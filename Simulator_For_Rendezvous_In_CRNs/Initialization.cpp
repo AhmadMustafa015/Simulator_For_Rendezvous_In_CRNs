@@ -19,7 +19,7 @@ Initialization::Initialization(int numOfBands, int numOfSUs, double PUProb, int 
 
 void Initialization::Initialize()
 {
-	std::cout.setstate(std::ios_base::failbit);
+	//std::cout.setstate(std::ios_base::failbit);
 	
 	counter = 0;
 	for (bandConstruct = Bands.begin(); bandConstruct != Bands.end(); bandConstruct++)
