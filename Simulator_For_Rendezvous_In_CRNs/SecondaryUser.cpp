@@ -40,7 +40,7 @@ void Transmitter::sendPacket(Band_Details &band, int ID, int radioNumber)
 
 Receiver::Receiver()
 {
-	std::uniform_int_distribution<int> distr(2, 2);
+	std::uniform_int_distribution<int> distr(5, 5);
 	numberOfRadio = distr(generator);
 }
 
