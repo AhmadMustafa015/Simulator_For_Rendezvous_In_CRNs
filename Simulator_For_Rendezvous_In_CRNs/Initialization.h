@@ -48,5 +48,8 @@ private:
 	std::vector<bool> sst;
 	double avgT;
 	std::vector<std::vector<int>> avgTToRPerSUs;
+	std::vector<std::vector<int>> MTTRPerUser;
+	std::vector<int> MTTRVsSU;
+	int maxValue(const std::vector<int> &V);
 };
 

@@ -17,17 +17,22 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std
 	p = 5;
 	distance = 2 * Tx.numberOfRadio;
 	std::cout << "Distance for TX ID " << ID << " = " << distance << ", initial band =  "<< initialBand << std::endl;
-	upperBound1 = (initialBand + distance / 2) % Bands.size();
-	lowerBound1 = (initialBand + 1) % Bands.size();
-	upperBound2 = (initialBand - 1) % Bands.size();
-	lowerBound2 = (initialBand - distance / 2) % Bands.size();
+	upperBound1 = (int(Bands.size()) + (initialBand + distance / 2) % int(Bands.size())) % int(Bands.size());
+	lowerBound1 = (int(Bands.size())+(initialBand + 1) % int(Bands.size()))% int(Bands.size());
+	upperBound2 =(int(Bands.size()) + (initialBand - 1) % int(Bands.size()))% int(Bands.size());
+	lowerBound2 =(int(Bands.size()) + (initialBand - distance / 2) % int(Bands.size())) % int(Bands.size());
 	channelHoppingSequence.resize(Tx.numberOfRadio);
 	channelSequence.resize(distance);
 	//RandomStayConst = distrRandomStay(generator5);
-	for (int b = lowerBound2; b <= upperBound2; b++)
+	/*for (int b = lowerBound2; b <= upperBound2; b++)
 	{
 		channelSequence[b - lowerBound2] = b % Bands.size();
 		channelSequence[Tx.numberOfRadio + (b - lowerBound2)] = (lowerBound1 + (b - lowerBound2)) % Bands.size();
+	}*/
+	for (int b = 0, BandTemp = lowerBound2 ; b < Tx.numberOfRadio; b++,BandTemp++)
+	{
+		channelSequence[b] = BandTemp % int(Bands.size());
+		channelSequence[Tx.numberOfRadio + b] = (lowerBound1 + b) % int(Bands.size());
 	}
 	std::cout << "Channel sequence : ";
 	for(int i = 0; i < channelSequence.size();i++)
@@ -72,16 +77,25 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Receiver & RX, std::
 	std::cout << "..................................................................................." << std::endl;
 	distance = 2 * RX.numberOfRadio;
 	std::cout << "Distance for RX ID " << ID << " = " << distance << ", initial band =  " << initialBand << std::endl;
-	upperBound1 = (initialBand + distance / 2) % Bands.size();
+	upperBound1 = (int(Bands.size()) + (initialBand + distance / 2) % int(Bands.size())) % int(Bands.size());
+	lowerBound1 = (int(Bands.size()) + (initialBand + 1) % int(Bands.size())) % int(Bands.size());
+	upperBound2 = (int(Bands.size()) + (initialBand - 1) % int(Bands.size())) % int(Bands.size());
+	lowerBound2 = (int(Bands.size()) + (initialBand - distance / 2) % int(Bands.size())) % int(Bands.size());
+	/*upperBound1 = (initialBand + distance / 2) % Bands.size();
 	lowerBound1 = (initialBand + 1) % Bands.size();
 	upperBound2 = (initialBand - 1) % Bands.size();
-	lowerBound2 = (initialBand - distance / 2) % Bands.size();
+	lowerBound2 = (initialBand - distance / 2) % Bands.size();*/
 	channelHoppingSequence.resize(RX.numberOfRadio);
 	channelSequence.resize(distance);
-	for (int b = lowerBound2; b <= upperBound2; b++)
+	/*for (int b = lowerBound2; b <= upperBound2; b++)
 	{
 		channelSequence[b - lowerBound2] = b % Bands.size();
 		channelSequence[RX.numberOfRadio + (b - lowerBound2)] = (lowerBound1 + (b - lowerBound2)) % Bands.size();
+	}*/
+	for (int b = 0, BandTemp = lowerBound2; b < RX.numberOfRadio; b++, BandTemp++)
+	{
+		channelSequence[b] = BandTemp % int(Bands.size());
+		channelSequence[RX.numberOfRadio + b] = (lowerBound1 + b) % int(Bands.size());
 	}
 	for (int i = 0; i < RX.numberOfRadio; i++)
 	{
@@ -127,15 +141,26 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 			didntFinishWholeBound = true;
 			radiosWithEmptyBand.clear();
 			channelSequence.clear();
-			lowerBound1 = (upperBound1 + 1) % Bands.size();
+			
+			lowerBound1 = (int(Bands.size()) + (upperBound1 + 1) % int(Bands.size())) % int(Bands.size());
+			upperBound1 = (int(Bands.size()) + (upperBound1 + Tx.numberOfRadio) % int(Bands.size())) % int(Bands.size());
+			upperBound2 = (int(Bands.size()) + (lowerBound2 - 1) % int(Bands.size())) % int(Bands.size());
+			lowerBound2 = (int(Bands.size()) + (lowerBound2 - Tx.numberOfRadio) % int(Bands.size())) % int(Bands.size());
+
+			/*lowerBound1 = (upperBound1 + 1) % Bands.size();
 			upperBound1 = (upperBound1 + Tx.numberOfRadio) % Bands.size();
 			upperBound2 = (lowerBound2 - 1) % Bands.size();
-			lowerBound2 = (lowerBound2 - Tx.numberOfRadio) % Bands.size();
+			lowerBound2 = (lowerBound2 - Tx.numberOfRadio) % Bands.size();*/
 			channelSequence.resize(distance);
-			for (int b = lowerBound2; b <= upperBound2; b++)
+			/*for (int b = lowerBound2; b <= upperBound2; b++)
 			{
 				channelSequence[b - lowerBound2] = b % Bands.size();
 				channelSequence[Tx.numberOfRadio + (b - lowerBound2)] = (lowerBound1 + (b - lowerBound2)) % Bands.size();
+			}*/
+			for (int b = 0, BandTemp = lowerBound2; b < Tx.numberOfRadio; b++, BandTemp++)
+			{
+				channelSequence[b] = BandTemp % int(Bands.size());
+				channelSequence[Tx.numberOfRadio + b] = (lowerBound1 + b) % int(Bands.size());
 			}
 			for (int i = 0; i < Tx.numberOfRadio; i++)
 			{
@@ -329,15 +354,26 @@ bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::v
 			didntFinishWholeBound = true;
 			radiosWithEmptyBand.clear();
 			channelSequence.clear();
-			lowerBound1 = (upperBound1 + 1) % Bands.size();
+
+			lowerBound1 = (int(Bands.size()) + (upperBound1 + 1) % int(Bands.size())) % int(Bands.size());
+			upperBound1 = (int(Bands.size()) + (upperBound1 + RX.numberOfRadio) % int(Bands.size())) % int(Bands.size());
+			upperBound2 = (int(Bands.size()) + (lowerBound2 - 1) % int(Bands.size())) % int(Bands.size());
+			lowerBound2 = (int(Bands.size()) + (lowerBound2 - RX.numberOfRadio) % int(Bands.size())) % int(Bands.size());
+
+			/*lowerBound1 = (upperBound1 + 1) % Bands.size();
 			upperBound1 = (upperBound1 + RX.numberOfRadio) % Bands.size();
 			upperBound2 = (lowerBound2 - 1) % Bands.size();
-			lowerBound2 = (lowerBound2 - RX.numberOfRadio) % Bands.size();
+			lowerBound2 = (lowerBound2 - RX.numberOfRadio) % Bands.size();*/
 			channelSequence.resize(distance);
-			for (int b = lowerBound2; b <= upperBound2; b++)
+			/*for (int b = lowerBound2; b <= upperBound2; b++)
 			{
 				channelSequence[b - lowerBound2] = b % Bands.size();
 				channelSequence[RX.numberOfRadio + (b - lowerBound2)] = (lowerBound1 + (b - lowerBound2)) % Bands.size();
+			}*/
+			for (int b = 0, BandTemp = lowerBound2; b < RX.numberOfRadio; b++, BandTemp++)
+			{
+				channelSequence[b] = BandTemp % int(Bands.size());
+				channelSequence[RX.numberOfRadio + b] = (lowerBound1 + b) % int(Bands.size());
 			}
 			for (int i = 0; i < RX.numberOfRadio; i++)
 			{
