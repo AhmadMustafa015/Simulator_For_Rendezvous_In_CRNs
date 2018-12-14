@@ -1,13 +1,4 @@
-TTR = [1, 2 , 4 , 8 , 8 , 8 , 10 , 10]; %ppu = .2
-NSUs = [10, 16 , 20, 26 , 30 , 40 , 46 , 50];
-
-TTR2 = [2 , 3 , 8 , 11 , 11 , 11 , 11 , 11]; %ppu = .4
-NSUs2 = [10 , 16 , 20 , 26 , 30 , 40, 46 , 50];
-
-TTR3 = [5 , 12 , 12 , 14 , 14 , 16 , 20 , 32]; %ppu = .6
-NSUs3 = [10 , 16 , 20 , 26 , 30 , 40, 46 , 50];
-figure(1)
-plot(NSUs , TTR ,'r-o' ,NSUs2 , TTR2 , 'm-^',NSUs3 , TTR3 ,'-x' )
+AvgTTRVSSU = csvread('Average TTR VS SU.csv');
 grid on;
 xlabel ('Number Of SUs');
 ylabel ('TTR');

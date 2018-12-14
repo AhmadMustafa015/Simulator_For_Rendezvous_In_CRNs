@@ -5,7 +5,8 @@ std::default_random_engine generator0(1);
 Initialization::Initialization(int numOfBands, int numOfSUs, double PUProb, int timeSlots)
 	:Tx(numOfSUs / 2), Bands(numOfBands), Rx(numOfSUs / 2), avgTToRPerSUs(numOfSUs / 2)
 	, channelHoppingRX(numOfSUs / 2), channelHoppingTX(numOfSUs / 2)
-	, successfulRendezvousVsSU(numOfSUs / 2, false),MTTRPerUser(numOfSUs/1)
+	, successfulRendezvousVsSU(numOfSUs / 2, false), MTTRPerUser(numOfSUs / 1)
+	, TTRVsSU(numOfSUs / 2, 0)
 {
 	numberOfBands = numOfBands;
 	numberOfSUs = numOfSUs;
@@ -164,6 +165,12 @@ void Initialization::Initialize()
 		std::copy(avgTToRPerSUs[i].begin(), avgTToRPerSUs[i].end(), outputIterator);
 		outputFile.close();
 		summ = std::accumulate(avgTToRPerSUs[i].begin(), avgTToRPerSUs[i].end(), 0);
+		if (summ > 0)
+			TTRVsSU[i] = double(summ / numOfRProcess[i]);
+		else
+		{
+			TTRVsSU[i] = double((summ + LastFailedRendezvous(avgTToRPerSUs[i])) / numOfRProcess[i]);			// This gets rid of the last failed rendezvous
+		}
 		std::cout << "***********************************   For SU : " << i << "  " << double(summ/numOfRProcess[i])<< "          ***************************************" << std::endl;
 		int tempr = 0;
 		for(auto &t : avgTToRPerSUs[i])
@@ -185,6 +192,13 @@ void Initialization::Initialize()
 	std::ostream_iterator<int> outputIterator(outputFile, "\n");
 	std::copy(MTTRVsSU.begin(), MTTRVsSU.end(), outputIterator);
 	outputFile.close();
+
+	std::ofstream outputFile0;
+	outputFile.open("Average TTR VS SU.csv");
+	std::ostream_iterator<int> outputIterator0(outputFile, "\n");
+	std::copy(TTRVsSU.begin(), TTRVsSU.end(), outputIterator0);
+	outputFile0.close();
+
 	for (int i = 0; i < numberOfSUs / 2; i++)
 		std::cout << successfulRendezvousVsSU[i] << "    ";
 	std::cout << probTest / 20000.0;
@@ -227,6 +241,15 @@ int Initialization::maxValue(const std::vector<int>& V)
 			max = t;
 	}
 	return max;
+}
+
+int Initialization::LastFailedRendezvous(const std::vector<int>& V)
+{
+	for (int i = V.size() - 1; i >= 0; i--)
+	{
+		if (V[i] < 0)
+			return -V[i];
+	}
 }
 
 void Initialization::PUArrival(int arrivalBand, std::vector<Band_Details> &Bands, bool State)

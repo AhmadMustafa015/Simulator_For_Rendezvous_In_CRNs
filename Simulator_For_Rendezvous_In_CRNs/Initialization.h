@@ -50,6 +50,8 @@ private:
 	std::vector<std::vector<int>> avgTToRPerSUs;
 	std::vector<std::vector<int>> MTTRPerUser;
 	std::vector<int> MTTRVsSU;
+	std::vector<int> TTRVsSU;
 	int maxValue(const std::vector<int> &V);
+	int LastFailedRendezvous(const std::vector<int> &V);
 };
 
