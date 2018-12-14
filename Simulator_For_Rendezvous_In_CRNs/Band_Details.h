@@ -13,6 +13,7 @@ public:
 	~Band_Details();
 	std::vector<int> packetVsID;
 	void clearPacket();
+	std::vector<int> occupants;
 private:
 	bool PUOFF;
 	double ProbON;

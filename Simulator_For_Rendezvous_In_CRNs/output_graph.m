@@ -79,6 +79,28 @@ hold on ;
  xlabel('SU');
  ylabel('TTR');
  legend('(1, 5)', '(2, 4)', '(3, 3)');
+ 
+ %*******************************************************************************************
+ 
+UtilizationVSBand = csvread('Utilization VS Band.csv');
+%  TTRVsSU24 = csvread('Average TTR VS SU(2, 4).csv');
+%  TTRVsSU33 = csvread('Average TTR VS SU(3, 3).csv');
+ 
+X1 = UtilizationVSBand(:,1);
+%  X2 = TTRVsSU24(:,1);
+%  X3 = TTRVsSU33(:,1);
+ 
+figure(5);
+hold on;
+plot(X1,'b-o');
+%  plot(X2,'r--*');
+%  plot(X3,'g--^');
+axis([-inf inf 0 1])
+grid on;
   
+title('Utilization VS Band');
+xlabel('Band');
+ylabel('Utilization');
+% legend('(1, 5)', '(2, 4)', '(3, 3)');
   
  

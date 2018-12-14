@@ -51,6 +51,7 @@ private:
 	std::vector<std::vector<int>> MTTRPerUser;
 	std::vector<int> MTTRVsSU;
 	std::vector<int> TTRVsSU;
+	std::vector<int> utilizationVsBand;
 	int maxValue(const std::vector<int> &V);
 	int LastFailedRendezvous(const std::vector<int> &V);
 };

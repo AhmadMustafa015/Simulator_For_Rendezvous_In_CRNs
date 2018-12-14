@@ -6,7 +6,7 @@ Initialization::Initialization(int numOfBands, int numOfSUs, double PUProb, int 
 	:Tx(numOfSUs / 2), Bands(numOfBands), Rx(numOfSUs / 2), avgTToRPerSUs(numOfSUs / 2)
 	, channelHoppingRX(numOfSUs / 2), channelHoppingTX(numOfSUs / 2)
 	, successfulRendezvousVsSU(numOfSUs / 2, false), MTTRPerUser(numOfSUs / 1)
-	, TTRVsSU(numOfSUs / 2, 0)
+	, TTRVsSU(numOfSUs / 2, 0), utilizationVsBand(numOfBands, 0)
 {
 	numberOfBands = numOfBands;
 	numberOfSUs = numOfSUs;
@@ -102,6 +102,7 @@ void Initialization::Initialize()
 		{
 			if (successfulRendezvousVsSU[i] && !Bands[Rx[i].allocatedBand].isEmpty())
 			{
+				++utilizationVsBand[Rx[i].allocatedBand];
 				std::cout << "PU come in band number " << Rx[i].allocatedBand << " " << std::endl;
 				successfulRendezvousVsSU[i] = false;
 				Bands[Rx[i].allocatedBand].clearPacket();
@@ -198,6 +199,16 @@ void Initialization::Initialize()
 	std::ostream_iterator<int> outputIterator0(outputFile0, "\n");
 	std::copy(TTRVsSU.begin(), TTRVsSU.end(), outputIterator0);
 	outputFile0.close();
+
+	double ts = timeSlot;
+	std::vector<double> oFile;
+	std::transform(utilizationVsBand.begin(), utilizationVsBand.end(), std::back_inserter(oFile),
+		[ts](int num) {return num / ts; });
+	std::ofstream outputFile1;
+	outputFile1.open("Utilization VS Band.csv");
+	std::ostream_iterator<double> outputIterator1(outputFile1, "\n");
+	std::copy(oFile.begin(), oFile.end(), outputIterator1);
+	outputFile1.close();
 
 	for (int i = 0; i < numberOfSUs / 2; i++)
 		std::cout << successfulRendezvousVsSU[i] << "    ";
