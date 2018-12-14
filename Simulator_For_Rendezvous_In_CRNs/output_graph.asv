@@ -72,13 +72,12 @@ hold on ;
  plot(X1,'b-o');
  plot(X2,'r--*');
  plot(X3,'g--^');
- axis([-inf inf 0 10])
  grid on;
   
  title('TTR Vs SU For Different Radios');
  xlabel('SU');
  ylabel('TTR');
- legend('(1, 5)', '(2, 4)', '(3, 3)');
+ legend('(1, 5)', 'PU Prob 0.4', 'PU Prob 0.6');
   
   
  
