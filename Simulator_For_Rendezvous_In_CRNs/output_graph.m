@@ -14,7 +14,7 @@ hold on ;
  plot(X2,'r--*');
  plot(X3,'g--^');
  title('MTTR Vs SU For differant PU activation probability');
- xlabel('SU number');
+ xlabel('SU');
  ylabel('MTTR');
  legend('PU prob (.2)','PU prob (.4)','PU prob (.6)');
  grid on;
@@ -34,7 +34,7 @@ hold on ;
  plot(X3,'g--^');
  grid on;
  title('MTTR Vs SU For differant number of radio');
- xlabel('SU number');
+ xlabel('SU');
  ylabel('MTTR');
  legend('number of radio (1-5)','number of radio (2-4)','number of radio (3-3');
  
@@ -54,6 +54,23 @@ hold on ;
  grid on;
  
  title('MTTR Vs SU For differant number of radio');
- xlabel('SU number');
+ xlabel('SU');
  ylabel('MTTR');
  legend('number of radio (1-1)','number of radio (2-2)','number of radio (4-4');
+ 
+ %*******************************************************************************************
+ TTRVsSU = csvread('Average TTR VS SU.csv');
+ X1 = TTRVsSU(:,1);
+  
+ figure(4);
+ hold on ;
+ plot(X1, 'b-o');
+ grid on;
+  
+ title('TTR Vs SU For Different PU Probability');
+ xlabel('SU');
+ ylabel('TTR');
+ legend('PU Prob 0.2');
+  
+  
+ 

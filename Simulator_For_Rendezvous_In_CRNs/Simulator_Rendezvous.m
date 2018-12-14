@@ -1,4 +1,5 @@
 AvgTTRVSSU = csvread('Average TTR VS SU.csv');
+
 grid on;
 xlabel ('Number Of SUs');
 ylabel ('TTR');

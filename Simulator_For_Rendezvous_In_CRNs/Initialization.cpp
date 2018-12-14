@@ -194,8 +194,8 @@ void Initialization::Initialize()
 	outputFile.close();
 
 	std::ofstream outputFile0;
-	outputFile.open("Average TTR VS SU.csv");
-	std::ostream_iterator<int> outputIterator0(outputFile, "\n");
+	outputFile0.open("Average TTR VS SU.csv");
+	std::ostream_iterator<int> outputIterator0(outputFile0, "\n");
 	std::copy(TTRVsSU.begin(), TTRVsSU.end(), outputIterator0);
 	outputFile0.close();
 
