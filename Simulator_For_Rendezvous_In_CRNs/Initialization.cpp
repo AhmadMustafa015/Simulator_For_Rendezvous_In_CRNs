@@ -187,7 +187,7 @@ void Initialization::Initialize()
 	outputFile.close();
 	for (int i = 0; i < numberOfSUs / 2; i++)
 		std::cout << successfulRendezvousVsSU[i] << "    ";
-	std::cout << probTest / 100.0;
+	std::cout << probTest / 20000.0;
 }
 
 
