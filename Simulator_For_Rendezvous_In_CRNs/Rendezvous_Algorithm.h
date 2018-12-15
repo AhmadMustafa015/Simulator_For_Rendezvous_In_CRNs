@@ -9,10 +9,10 @@ class Rendezvous_Algorithm
 public:
 	Rendezvous_Algorithm() {};
 	Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std::vector<Band_Details> &Bands, int ID);
-	Rendezvous_Algorithm(int initialBand, Receiver &Rx, std::vector<Band_Details> &Bands, int ID);
+	Rendezvous_Algorithm(int initialBand, Receiver &Rx, std::vector<Band_Details> &Bands, int ID,std::vector<int> &occBands);
 	~Rendezvous_Algorithm() {};
 	void ourAlgorithmTx(int initialBand,Transmitter &SUs, std::vector<Band_Details> &Bands,int Id,int timeSlot);
-	bool ourAlgorithmRx(int initialBand,Receiver &SUs, std::vector<Band_Details> &Bands,int Id, int timeSlot , std::vector<Rendezvous_Algorithm> &TXs);
+	bool ourAlgorithmRx(int initialBand,Receiver &SUs, std::vector<Band_Details> &Bands,int Id, int timeSlot , std::vector<Rendezvous_Algorithm> &TXs, std::vector<int> &occBands);
 	std::vector<int> channelHoppingSequence;
 	bool firstRendezvous;
 	std::vector<int> randomStay;
