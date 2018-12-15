@@ -622,7 +622,7 @@ bool Rendezvous_Algorithm::ourAlgorithmRx(int initialBand, Receiver & RX, std::v
 						TXs[ID].radiosWithEmptyBand.clear();
 						TXs[ID].radioThatSendPacket = 0;
 						std::cout << "RADIO NUMBER : " << i << "  successfully rendezvous FROM STAYING IN THE BAND at time slot " << timeSlot << std::endl;
-						occBands.push_back(channelHoppingSequence[i]);
+						//occBands.push_back(channelHoppingSequence[i]);
 						return true;
 					}
 					setSpecialBands(channelHoppingSequence[i]);
