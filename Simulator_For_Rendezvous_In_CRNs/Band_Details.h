@@ -14,8 +14,9 @@ public:
 	std::vector<int> packetVsID;
 	void clearPacket();
 	std::vector<int> occupants;
-private:
 	bool PUOFF;
+private:
+
 	double ProbON;
 	//std::vector<unsigned int> Occupants;
 };

@@ -212,7 +212,7 @@ void Initialization::Initialize()
 
 	for (int i = 0; i < numberOfSUs / 2; i++)
 		std::cout << successfulRendezvousVsSU[i] << "    ";
-	std::cout << probTest / 20000.0;
+	std::cout << probTest / 1000.0;
 }
 
 
