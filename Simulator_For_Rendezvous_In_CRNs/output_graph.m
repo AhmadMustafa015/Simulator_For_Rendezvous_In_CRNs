@@ -81,6 +81,29 @@ hold on ;
  
  %*******************************************************************************************
  
+ TTRVsSU11 = csvread('Average TTR VS SU(1, 1).csv');
+ TTRVsSU22 = csvread('Average TTR VS SU(2, 2).csv');
+ TTRVsSU55 = csvread('Average TTR VS SU(5, 5).csv');
+ 
+ X1 = TTRVsSU11(:,1);
+ X2 = TTRVsSU22(:,1);
+ X3 = TTRVsSU55(:,1);
+ 
+ figure(5);
+ hold on ;
+ plot(X1,'b-o');
+ plot(X2,'r--*');
+ plot(X3,'g--^');
+ axis([-inf inf 0 10])
+ grid on;
+  
+ title('TTR Vs SU For Same Radios');
+ xlabel('SU');
+ ylabel('TTR');
+ legend('(1, 1)', '(2, 2)', '(5, 5)');
+ 
+ %*******************************************************************************************
+ 
 UtilizationVSBand = csvread('Utilization VS Band.csv');
 %  TTRVsSU24 = csvread('Average TTR VS SU(2, 4).csv');
 %  TTRVsSU33 = csvread('Average TTR VS SU(3, 3).csv');
@@ -89,7 +112,7 @@ X1 = UtilizationVSBand(:,1);
 %  X2 = TTRVsSU24(:,1);
 %  X3 = TTRVsSU33(:,1);
  
-figure(5);
+figure(6);
 hold on;
 plot(X1,'b-o');
 %  plot(X2,'r--*');
