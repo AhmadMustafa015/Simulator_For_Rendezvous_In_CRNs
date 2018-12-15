@@ -58,27 +58,27 @@ hold on ;
  legend('number of radio (1-1)','number of radio (2-2)','number of radio (4-4)');
  title('MTTR Vs SU for equal number of radio at TX and RX');
  %*******************************************************************************************
-%  TTRVsSU15 = csvread('Average TTR VS SU(1, 5).csv');
-%  TTRVsSU24 = csvread('Average TTR VS SU(2, 4).csv');
-%  TTRVsSU33 = csvread('Average TTR VS SU(3, 3).csv');
-%  
-%  X1 = TTRVsSU15(:,1);
-%  X2 = TTRVsSU24(:,1);
-%  X3 = TTRVsSU33(:,1);
-%  
-%  figure(4);
-%  hold on ;
-%  plot(X1,'b-o');
-%  plot(X2,'r--*');
-%  plot(X3,'g--^');
-%  axis([-inf inf 0 10])
-%  grid on;
-%   
-%  title('TTR Vs SU For Different Radios');
-%  xlabel('SU');
-%  ylabel('TTR');
-%  legend('(1, 5)', '(2, 4)', '(3, 3)');
-%  
+ TTRVsSU15 = csvread('Average TTR VS SU(1, 5).csv');
+ TTRVsSU24 = csvread('Average TTR VS SU(2, 4).csv');
+ TTRVsSU33 = csvread('Average TTR VS SU(3, 3).csv');
+ 
+ X1 = TTRVsSU15(:,1);
+ X2 = TTRVsSU24(:,1);
+ X3 = TTRVsSU33(:,1);
+ 
+ figure(4);
+ hold on ;
+ plot(X1,'b-o');
+ plot(X2,'r--*');
+ plot(X3,'g--^');
+ axis([-inf inf 0 10])
+ grid on;
+  
+ title('TTR Vs SU For Different Radios');
+ xlabel('SU');
+ ylabel('TTR');
+ legend('(1, 5)', '(2, 4)', '(3, 3)');
+ 
  %*******************************************************************************************
  
 UtilizationVSBand = csvread('Utilization VS Band.csv');
