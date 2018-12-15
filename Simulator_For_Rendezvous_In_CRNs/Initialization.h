@@ -54,5 +54,6 @@ private:
 	std::vector<int> utilizationVsBand;
 	int maxValue(const std::vector<int> &V);
 	int LastFailedRendezvous(const std::vector<int> &V);
+	std::vector<int> occBands;
 };
 
