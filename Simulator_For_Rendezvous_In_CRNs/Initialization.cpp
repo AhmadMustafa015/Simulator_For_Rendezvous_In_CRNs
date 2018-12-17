@@ -70,9 +70,9 @@ void Initialization::Initialize()
 		for (int i = 0; i < Bands.size(); i++)
 		{
 			if (Bands[i].isEmpty())
-				Bands[i].setState((double(rand()) / double(RAND_MAX)) >= 0.05); // PUProbON);
+				Bands[i].setState((double(rand()) / double(RAND_MAX)) >= 0.05); // Alpha
 			else
-				Bands[i].setState((double(rand()) / double(RAND_MAX)) <= 0.05); // PUProbON);
+				Bands[i].setState((double(rand()) / double(RAND_MAX)) <= 0.2);  // Beta
 
 			for (int j = 0; j < numberOfSUs / 2; j++)
 			{
@@ -217,7 +217,7 @@ void Initialization::Initialize()
 
 	for (int i = 0; i < numberOfSUs / 2; i++)
 		std::cout << successfulRendezvousVsSU[i] << "    ";
-	std::cout << probTest / 1000.0;
+	std::cout << probTest / 100000.0;
 }
 
 
