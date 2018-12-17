@@ -70,9 +70,9 @@ void Initialization::Initialize()
 		for (int i = 0; i < Bands.size(); i++)
 		{
 			if (Bands[i].isEmpty())
-				Bands[i].setState((double(rand()) / double(RAND_MAX)) >= 0.05); // Alpha
+				Bands[i].setState((double(rand()) / double(RAND_MAX)) >= 0.2); // Alpha
 			else
-				Bands[i].setState((double(rand()) / double(RAND_MAX)) <= 0.2);  // Beta
+				Bands[i].setState((double(rand()) / double(RAND_MAX)) <= 0.3);  // Beta
 
 			for (int j = 0; j < numberOfSUs / 2; j++)
 			{
