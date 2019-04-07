@@ -48,7 +48,7 @@ bool Receiver::listening(Band_Details &band, int ID)
 {
 	if (band.packetVsID.size() == 1 && band.packetVsID[0] == ID)
 	{
-		//std::cout << std::endl <<"rendezvous" << ID;
+		//std::cout << std::endl <<"rendezvous" << ID; //print redezvous if successfully rendezvous
 		numberOfRendezvous++;
 		return true;
 	}
