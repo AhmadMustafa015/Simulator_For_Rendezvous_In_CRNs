@@ -19,68 +19,66 @@ Initialization::Initialization(int numOfBands, int numOfSUs, double PUProb, int 
 
 void Initialization::Initialize()
 {
-	std::cout.setstate(std::ios_base::failbit);
+	std::cout.setstate(std::ios_base::failbit); //this line disable all cout 
 	
 	counter = 0;
 	for (bandConstruct = Bands.begin(); bandConstruct != Bands.end(); bandConstruct++)
+		//initilize all bands there number and weither there is PU or not
 	{
 		*bandConstruct = Band_Details(PUProbON);
 		if (Bands[counter].isEmpty())
-			std::cout << counter << " ";
+			std::cout << counter << " "; //print all empty bands
 		counter++;
 	}
 	std::cout << std::endl << "----------------------------------------" << std::endl;
-	/*for (SUsConstruct = SUs.begin(); SUsConstruct != SUs.end(); SUsConstruct++)
-	{
-		SUsConstruct->scanningBands(Bands);
-	}*/
-	intitialTransmittingAndReceiving(Tx, Rx, numberOfBands);
+	intitialTransmittingAndReceiving(Tx, Rx, numberOfBands); //initilize that all pu disconnect because pu become active in there bands (handoff)
 	counter = 0;
 	for (RendezvousTxIterator = channelHoppingTX.begin(); RendezvousTxIterator != channelHoppingTX.end(); RendezvousTxIterator++)
 	{
-		*RendezvousTxIterator = Rendezvous_Algorithm(Tx[counter].allocatedBand, Tx[counter], Bands, counter);
+		*RendezvousTxIterator = Rendezvous_Algorithm(Tx[counter].allocatedBand, Tx[counter], Bands, counter); //apply our algorithm for the first time for TX
 		counter++;
 	}
 	counter = 0;
 	for (RendezvousRxIterator = channelHoppingRX.begin(); RendezvousRxIterator != channelHoppingRX.end(); RendezvousRxIterator++)
 	{
-		*RendezvousRxIterator = Rendezvous_Algorithm(Rx[counter].allocatedBand, Rx[counter], Bands, counter,occBands);
+		*RendezvousRxIterator = Rendezvous_Algorithm(Rx[counter].allocatedBand, Rx[counter], Bands, counter,occBands); //apply our algrithm for the first time for RX
 		counter++;
 	}
 	std::cout << "Rendezvous status: ";
 	for (int i = 0; i < numberOfSUs / 2; i++)
 	{
-		successfulRendezvousVsSU[i] = channelHoppingRX[i].firstRendezvous;
+		successfulRendezvousVsSU[i] = channelHoppingRX[i].firstRendezvous; //check if user i successfully rendezvous (TX with RX) 
 		if (channelHoppingRX[i].firstRendezvous)
-			avgTimeToRendezvous.push_back(1);
+			avgTimeToRendezvous.push_back(1); //if they successfully rendezvous then add time to 1 
 		else
 		{
-			avgTimeToRendezvous.push_back(-1);
+			avgTimeToRendezvous.push_back(-1); //else add -1 to indicate that they spend 1 time slote without rendezvous 
 		}
-		channelHoppingRX[i].firstRendezvous = false;
-		sst.push_back(successfulRendezvousVsSU[i]);
-		std::cout << successfulRendezvousVsSU[i] << " ";
+		channelHoppingRX[i].firstRendezvous = false; //this variable use later in here we just initilize it to false for every RX
+		sst.push_back(successfulRendezvousVsSU[i]); //this vector use for output
+		std::cout << successfulRendezvousVsSU[i] << " "; //output if pair of users rendezvous or not
 	}
 	std::cout << std::endl << "//////////////////////  Time slot number ///////////////////////////// (" << 0 <<")" << std::endl;
 	double probTest = 0;
 	for (int T = 1; T < timeSlot; T++)
 	{
-		if (T ==999)
+		if (T ==999) //this if statment just for debugging
 			std::cout << "103";
 		for (int i = 0; i < Bands.size(); i++)
 		{
+			//below if and else for Markov chain 
 			if (Bands[i].isEmpty())
-				Bands[i].setState((double(rand()) / double(RAND_MAX)) >= 0.2); // Alpha
+				Bands[i].setState((double(rand()) / double(RAND_MAX)) >= 0.2); // Alpha 
 			else
 				Bands[i].setState((double(rand()) / double(RAND_MAX)) <= 0.3);  // Beta
 
 			for (int j = 0; j < numberOfSUs / 2; j++)
 			{
 				if (!successfulRendezvousVsSU[j] && std::find(Bands[i].packetVsID.begin(), Bands[i].packetVsID.end(), j) != Bands[i].packetVsID.end())
-					Bands[i].clearPacket();
+					Bands[i].clearPacket(); //clear all packet in this band which is only one packet if the pu come (handoff)
 				else if(!Bands[i].isEmpty())
 				{
-					Bands[i].clearPacket();
+					Bands[i].clearPacket(); //or there is pu in this band (double check)
 				}
 			}
 		}
@@ -89,24 +87,23 @@ void Initialization::Initialize()
 	//	counter = 0;
 		for (int i = 0; i < numberOfSUs / 2; i++)
 			if (!successfulRendezvousVsSU[i])
-				channelHoppingTX[i].ourAlgorithmTx(Tx[i].allocatedBand, Tx[i], Bands, i, T);
+				channelHoppingTX[i].ourAlgorithmTx(Tx[i].allocatedBand, Tx[i], Bands, i, T); //if the TX and RX didn't find each other so far do our algorithm fo TX
 		for (int i = 0; i < numberOfSUs / 2; i++)
 			if (!successfulRendezvousVsSU[i])
-				successfulRendezvousVsSU[i] = channelHoppingRX[i].ourAlgorithmRx(Rx[i].allocatedBand, Rx[i], Bands, i, T , channelHoppingTX,occBands);
+				successfulRendezvousVsSU[i] = channelHoppingRX[i].ourAlgorithmRx(Rx[i].allocatedBand, Rx[i], Bands, i, T , channelHoppingTX,occBands); //FOR RX
 		std::cout << "Rendezvous status: ";
 		for (int i = 0; i < successfulRendezvousVsSU.size(); i++)
-			std::cout << successfulRendezvousVsSU[i] << " ";
+			std::cout << successfulRendezvousVsSU[i] << " "; //print status of the SU 
 		std::cout << std::endl;
 
 		for (int i = 0; i < numberOfSUs / 2; i++)
 		{
-			if (successfulRendezvousVsSU[i] && !Bands[Rx[i].allocatedBand].isEmpty())
+			if (successfulRendezvousVsSU[i] && !Bands[Rx[i].allocatedBand].isEmpty()) //if PU come to band that already SU in it
 			{
-				//++utilizationVsBand[Rx[i].allocatedBand];
-				occBands.erase(std::remove(occBands.begin(), occBands.end(), Rx[i].allocatedBand), occBands.end());
-				std::cout << "PU come in band number " << Rx[i].allocatedBand << " " << std::endl;
-				successfulRendezvousVsSU[i] = false;
-				Bands[Rx[i].allocatedBand].clearPacket();
+				occBands.erase(std::remove(occBands.begin(), occBands.end(), Rx[i].allocatedBand), occBands.end()); //remove this band from occupeid band
+				std::cout << "PU come in band number " << Rx[i].allocatedBand << " " << std::endl; //print the band number which pu come to it
+				successfulRendezvousVsSU[i] = false; //update SU state
+				Bands[Rx[i].allocatedBand].clearPacket(); //clear packet in the band
 				RendezvousTxIterator = channelHoppingTX.begin() + i;
 				*RendezvousTxIterator = Rendezvous_Algorithm(Rx[i].allocatedBand, Tx[i], Bands, i);
 				RendezvousRxIterator = channelHoppingRX.begin() + i;
@@ -227,7 +224,6 @@ void Initialization::intitialTransmittingAndReceiving(std::vector<Transmitter> &
 	int randomBand;
 	std::vector<int> allocatedBands;
 	std::uniform_int_distribution<int> distr(0, numberOfBands - 1);
-	//std::cout << SUs.size();
 	for (unsigned int i = 0; i < Tx.size(); i++)
 	{
 		while (!connected)
@@ -243,7 +239,6 @@ void Initialization::intitialTransmittingAndReceiving(std::vector<Transmitter> &
 		Tx[i].bandAllocation(randomBand);
 		Rx[i].bandAllocation(randomBand);
 		PUArrival(randomBand, Bands, false);
-		//arrivalBand = SUs[0].allocatedBand;
 		connected = false;
 	}
 }

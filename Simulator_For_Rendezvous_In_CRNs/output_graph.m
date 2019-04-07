@@ -59,7 +59,7 @@ hold on ;
  title('MTTR Vs SU for equal number of radio at TX and RX');
  %*******************************************************************************************
  TTRVsSU15 = csvread('Average TTR VS SU(1, 5).csv');
- TTRVsSU24 = csvread('Average TTR VS SU(2, 4).csv');
+ TTRVsSU24 = csvread('Average TTR VS SU(5, 1).csv');
  TTRVsSU33 = csvread('Average TTR VS SU(3, 3).csv');
  
  X1 = TTRVsSU15(:,1);
