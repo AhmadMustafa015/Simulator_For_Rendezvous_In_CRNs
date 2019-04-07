@@ -5,5 +5,4 @@ int main()
 	Initialization Start(100, 40, 0.4, 100000);
 	Start.Initialize();
 	system("pause");
-
 }
