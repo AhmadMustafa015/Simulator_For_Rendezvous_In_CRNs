@@ -9,12 +9,12 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std
 	:numberOfStayCounter(Tx.numberOfRadio, 0), randomStay(Tx.numberOfRadio, 0)
 {
 	radioThatSendPacket = 0;
-	logical2 = false;
+	logical2 = false; //delete
 	specialBandSendingTimes = 0;
-	state = false;
-	didntFinishWholeBound = true;
+	state = false; //delete
+	didntFinishWholeBound = true; //delete
 	radioThatSendPacket = 0;
-	p = 5;
+	p = 5; //max stay time
 	distance = 2 * Tx.numberOfRadio; //range of the TX is double its number of radio
 	std::cout << "Distance for TX ID " << ID << " = " << distance << ", initial band =  "<< initialBand << std::endl;
 	upperBound1 = (int(Bands.size()) + (initialBand + distance / 2) % int(Bands.size())) % int(Bands.size()); //upper bound 1 right of the intial band(modulu of number of all bands)
@@ -38,8 +38,9 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std
 		channelHoppingSequence[i] = channelSequence[i * 2]; //each radio hop on the channel (equally likely)
 		if (Tx.scanningBands(Bands, channelHoppingSequence[i])) //check if specific band is empty (no PU)
 		{
-			radiosWithEmptyBand.push_back(i); //fill this vector with empty band (no PU)
+			radiosWithEmptyBand.push_back(i); //fill this vector with empty band (no PU) ************************
 			randomStay[i] = distrRandomStay(generator5); //each radio stay for random time in the band
+			setSpecialBands(channelHoppingSequence[i]); //added this band to special bands ---------NEW----------
 			numberOfStayCounter[i]++; //count time slot for each radio which stay in the band to match with radomStay vector
 		}
 	}
@@ -92,6 +93,7 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Receiver & RX, std::
 		{
 			radiosWithEmptyBand.push_back(i); //fill this vector with empty band (no PU)
 			randomStay[i] = distrRandomStay(generator5);//each radio stay for random time in the band
+			setSpecialBands(channelHoppingSequence[i]); //added this band to special bands ---------NEW----------
 			numberOfStayCounter[i]++;//count time slot for each radio which stay in the band to match with radomStay vector
 		}
 		if (RX.listening(Bands[channelHoppingSequence[i]], ID)) //check if successfuly rendezvous
@@ -612,19 +614,20 @@ int Rendezvous_Algorithm::returnMaxValueInVector(const std::vector<int>& V) cons
 
 void Rendezvous_Algorithm::setSpecialBands(int B)
 {
+	//inmportant note: iterative mean the rank of the band in the SB vector they are syncronized (same indexs)
 	int firstOutOfOrder, location;
 	int temp , temp2;
-	if (std::find(specialBands.begin(), specialBands.end(), B) == specialBands.end())
+	if (std::find(specialBands.begin(), specialBands.end(), B) == specialBands.end()) //CHECK if the band B not in the SB vector
 	{
 		specialBands.push_back(B);
-		iterative.push_back(1);
+		iterative.push_back(1); //set the rank of the band to 1
 	}
-	else
+	else //if its already in SB vector increase its rank  
 	{
-		std::vector<int>::iterator itr = std::find(specialBands.begin(), specialBands.end(), B);
-		++iterative[std::distance(specialBands.begin(), itr)];
+		std::vector<int>::iterator itr = std::find(specialBands.begin(), specialBands.end(), B); //return the index of the the band in the SB vector
+		++iterative[std::distance(specialBands.begin(), itr)]; //increace the rank of the band
 	}
-	for (firstOutOfOrder = 1; firstOutOfOrder < specialBands.size(); firstOutOfOrder++)
+	/*for (firstOutOfOrder = 1; firstOutOfOrder < specialBands.size(); firstOutOfOrder++) //Binary sorting 
 	{
 		if (iterative[firstOutOfOrder] < iterative[firstOutOfOrder - 1])
 		{
@@ -640,6 +643,20 @@ void Rendezvous_Algorithm::setSpecialBands(int B)
 			specialBands[location] = temp;
 			iterative[location] = temp2;
 		}
+	}*/
+	for (firstOutOfOrder = 1; firstOutOfOrder < iterative.size(); firstOutOfOrder++) //insertion sorting from the higher rank to lower -------new-----
+	{
+		temp = specialBands[firstOutOfOrder];
+		temp2 = iterative[firstOutOfOrder];
+		location = firstOutOfOrder - 1;
+		while ((location >= 0) && (temp2 > iterative[location]))
+		{
+			specialBands[location + 1] = specialBands[location];
+			iterative[location + 1] = iterative[location];
+			location--;
+		}
+		specialBands[location + 1] = temp;
+		iterative[location + 1] = temp2;
 	}
 }
 void Rendezvous_Algorithm::removeFromSpecialBand(int B)
