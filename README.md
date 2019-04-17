@@ -1,2 +1,2 @@
 # Simulator_For_Rendezvous_In_CRNs
-This C++ Program Simulate The Rendezvous Process For Two SUs In CRNs 
+This C++ program simulate the rendezvous process for multiple SUs In cognative radio network 

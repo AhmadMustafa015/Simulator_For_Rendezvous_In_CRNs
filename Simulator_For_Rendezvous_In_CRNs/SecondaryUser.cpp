@@ -29,7 +29,7 @@ void SecondaryUser::emptyAllResult() {
 
 Transmitter::Transmitter()
 {
-	std::uniform_int_distribution<int> distr(3, 3);
+	std::uniform_int_distribution<int> distr(1, 1);
 	numberOfRadio = distr(generator);
 }
 
@@ -40,7 +40,7 @@ void Transmitter::sendPacket(Band_Details &band, int ID, int radioNumber)
 
 Receiver::Receiver()
 {
-	std::uniform_int_distribution<int> distr(3, 3);
+	std::uniform_int_distribution<int> distr(5, 5);
 	numberOfRadio = distr(generator);
 }
 
@@ -48,7 +48,7 @@ bool Receiver::listening(Band_Details &band, int ID)
 {
 	if (band.packetVsID.size() == 1 && band.packetVsID[0] == ID)
 	{
-		//std::cout << std::endl <<"rendezvous" << ID;
+		//std::cout << std::endl <<"rendezvous" << ID; //print redezvous if successfully rendezvous
 		numberOfRendezvous++;
 		return true;
 	}
