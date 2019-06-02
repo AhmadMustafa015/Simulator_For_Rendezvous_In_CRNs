@@ -19,7 +19,7 @@ Initialization::Initialization(int numOfBands, int numOfSUs, double PUProb, int 
 
 void Initialization::Initialize()
 {
-	std::cout.setstate(std::ios_base::failbit); //this line disable all cout 
+	//std::cout.setstate(std::ios_base::failbit); //this line disable all cout 
 	
 	counter = 0;
 	for (bandConstruct = Bands.begin(); bandConstruct != Bands.end(); bandConstruct++)
@@ -62,7 +62,7 @@ void Initialization::Initialize()
 	double probTest = 0;
 	for (int T = 1; T < timeSlot; T++)
 	{
-		if (T ==999) //this if statment just for debugging
+		if (T ==9) //this if statment just for debugging
 			std::cout << "103";
 		for (int i = 0; i < Bands.size(); i++)
 		{

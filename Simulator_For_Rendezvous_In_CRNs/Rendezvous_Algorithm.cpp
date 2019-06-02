@@ -11,7 +11,7 @@ Rendezvous_Algorithm::Rendezvous_Algorithm(int initialBand, Transmitter &Tx, std
 	radioThatSendPacket = 0;
 	logical2 = false; //delete
 	specialBandSendingTimes = 0;
-	state = false; //delete
+	state = false;
 	didntFinishWholeBound = true; //delete
 	radioThatSendPacket = 0;
 	p = 5; //max stay time
@@ -124,35 +124,36 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 	std::cout << "TX ID =  " << ID << std::endl;
 	//if(timeSlot == 4 * ) 
 	if (returnMaxValueInVector(numberOfStayCounter) > returnMaxValueInVector(randomStay)
-		|| (radiosWithEmptyBand.empty() && !didntFinishWholeBound)) //increase bound if most radio should 
-	{														  //stay finish
+		|| (radiosWithEmptyBand.empty() && !didntFinishWholeBound)) //if the radio which have the higher number of waiting time has finish OR
+																	//sens the whole band and found that its occupied by PU
+	{														  
 		if (state || specialBands.empty())
 		{
 			state = false;
 			didntFinishWholeBound = true;
 			radiosWithEmptyBand.clear();
 			channelSequence.clear();
-			
+			//change the upper and lower limit
 			lowerBound1 = (int(Bands.size()) + (upperBound1 + 1) % int(Bands.size())) % int(Bands.size());
 			upperBound1 = (int(Bands.size()) + (upperBound1 + Tx.numberOfRadio) % int(Bands.size())) % int(Bands.size());
 			upperBound2 = (int(Bands.size()) + (lowerBound2 - 1) % int(Bands.size())) % int(Bands.size());
 			lowerBound2 = (int(Bands.size()) + (lowerBound2 - Tx.numberOfRadio) % int(Bands.size())) % int(Bands.size());
 			channelSequence.resize(distance);
-			for (int b = 0, BandTemp = lowerBound2; b < Tx.numberOfRadio; b++, BandTemp++)
+			for (int b = 0, BandTemp = lowerBound2; b < Tx.numberOfRadio; b++, BandTemp++) 
 			{
-				channelSequence[b] = BandTemp % int(Bands.size());
-				channelSequence[Tx.numberOfRadio + b] = (lowerBound1 + b) % int(Bands.size());
+				channelSequence[b] = BandTemp % int(Bands.size()); //fill the vector with channel sequence within the lower limit
+				channelSequence[Tx.numberOfRadio + b] = (lowerBound1 + b) % int(Bands.size()); //fill the vector with upper limit sequence
 			}
 			for (int i = 0; i < Tx.numberOfRadio; i++)
 			{
 				numberOfStayCounter[i] = 0;
 				randomStay[i] = 0;
-				channelHoppingSequence[i] = channelSequence[i * 2];
-				if (Tx.scanningBands(Bands, channelHoppingSequence[i]))
+				channelHoppingSequence[i] = channelSequence[i * 2]; //each radio hob on the specific band
+				if (Tx.scanningBands(Bands, channelHoppingSequence[i])) //if band is empty
 				{
 					randomStay[i] = distrRandomStay(generator5);
 					radiosWithEmptyBand.push_back(i);
-					setSpecialBands(channelHoppingSequence[i]);
+					setSpecialBands(channelHoppingSequence[i]); //added this band to special band or increase its rank
 					numberOfStayCounter[i]++;
 				}
 				else
@@ -166,46 +167,48 @@ void Rendezvous_Algorithm::ourAlgorithmTx(int initialBand, Transmitter &Tx, std:
 				if (radiosWithEmptyBand.size() != 0)
 				{
 					radioSendPacket = distr(generator5) - 1;
-					Tx.sendPacket(Bands[channelHoppingSequence[radiosWithEmptyBand[radioSendPacket]]], ID, radiosWithEmptyBand[radioSendPacket]);
+					Tx.sendPacket(Bands[channelHoppingSequence[radiosWithEmptyBand[radioSendPacket]]], ID, radiosWithEmptyBand[radioSendPacket]); //one radio send packet
 				}
-				std::cout << "Radio " << radiosWithEmptyBand[radioSendPacket] << " sends a packet on band " << channelHoppingSequence[radiosWithEmptyBand[radioSendPacket]] << std::endl;
+				std::cout << "Radio " << radiosWithEmptyBand[radioSendPacket] << " sends a packet on band "
+					<< channelHoppingSequence[radiosWithEmptyBand[radioSendPacket]] << std::endl;
 			}
 		}
-		else
+		else //if special band not empty
 		{
 			for (int i = 0; i < Tx.numberOfRadio; i++)
 			{
-				if (specialBands.size() > i && specialBands.size() > 0)
-					channelHoppingSequence[i] = specialBands[i]; //fix this error 
-				if (Tx.scanningBands(Bands, channelHoppingSequence[i]))
+				if (specialBands.size() > i && specialBands.size() > 0) //if the number radio higher than special band size don't execute this
+					channelHoppingSequence[i] = specialBands[i]; //set next hop is the special band i
+				if (Tx.scanningBands(Bands, channelHoppingSequence[i])) //sensing the band 
 				{
 					
-					randomStay[i] = distrRandomStay(generator5);
-					if (std::find(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i) == radiosWithEmptyBand.end())
-					radiosWithEmptyBand.push_back(i);
+					//randomStay[i] = distrRandomStay(generator5); //set random stay **************************************
+					if (std::find(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i) == radiosWithEmptyBand.end()) //added radio ID the vector if it's not in the vector
+						radiosWithEmptyBand.push_back(i);
 					setSpecialBands(channelHoppingSequence[i]);
 				}
 				else
 				{
-					radiosWithEmptyBand.erase(std::remove(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i), radiosWithEmptyBand.end());
-					removeFromSpecialBand(channelHoppingSequence[i]); //if there is PU
+					radiosWithEmptyBand.erase(std::remove(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), i), radiosWithEmptyBand.end()); //if PU in the band 
+					removeFromSpecialBand(channelHoppingSequence[i]); //ALso remove from special band											//remove it from vector
 				}
 			}
-			for (radioThatSendPacket; radioThatSendPacket < Tx.numberOfRadio; radioThatSendPacket++)
+			for (radioThatSendPacket; radioThatSendPacket < Tx.numberOfRadio; radioThatSendPacket++) //radios that going to send packets every time slot
 			{
-				if (std::find(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), radioThatSendPacket) != radiosWithEmptyBand.end())
-				{
-					std::uniform_int_distribution<int> distr(1, radiosWithEmptyBand.size());
+				if (std::find(radiosWithEmptyBand.begin(), radiosWithEmptyBand.end(), radioThatSendPacket) != radiosWithEmptyBand.end()) //make sure that the radio will send 
+				{																														//send the packet in empty band
+				//	std::uniform_int_distribution<int> distr(1, radiosWithEmptyBand.size());********************
 					Tx.sendPacket(Bands[channelHoppingSequence[radioThatSendPacket]], ID, radioThatSendPacket);
 					specialBandSendingTimes++;
 					std::cout << "Radio " << radioThatSendPacket << " sends a packet on band " << channelHoppingSequence[radioThatSendPacket] << std::endl;
 					break;
 				}
+				//********** added else
 			}
 			if (specialBandSendingTimes == Tx.numberOfRadio || logical2)
 			{
 				radioThatSendPacket++;
-				logical2 = true;
+				logical2 = true; //make sure just the first radio send packet for R time slot
 			}
 			if (radioThatSendPacket == Tx.numberOfRadio)
 			{
@@ -644,12 +647,12 @@ void Rendezvous_Algorithm::setSpecialBands(int B)
 			iterative[location] = temp2;
 		}
 	}*/
-	for (firstOutOfOrder = 1; firstOutOfOrder < iterative.size(); firstOutOfOrder++) //insertion sorting from the higher rank to lower -------new-----
+	for (firstOutOfOrder = 1; firstOutOfOrder < iterative.size(); firstOutOfOrder++) //insertion sorting from the higher rank to lower -------new-------
 	{
 		temp = specialBands[firstOutOfOrder];
 		temp2 = iterative[firstOutOfOrder];
 		location = firstOutOfOrder - 1;
-		while ((location >= 0) && (temp2 > iterative[location]))
+		while ((location >= 0) && (temp2 > iterative[location])) //based on ranking
 		{
 			specialBands[location + 1] = specialBands[location];
 			iterative[location + 1] = iterative[location];
